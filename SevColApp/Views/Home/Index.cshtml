@@ -1,8 +1,54 @@
-﻿@{
+﻿@model SevColApp.Models.User
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<html>
+
+<body>
+    <p>Please input your name:</p>
+
+
+    <form asp-action="create">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <table>
+            <tr>
+                <th><label>First name:</label></th>
+                <td>
+                    <input asp-for="FirstName" class="form-control" />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </td>
+            </tr>
+            <tr>
+                <th><label>Last name:</label></th>
+                <td>
+                    <input asp-for="LastName" class="form-control" />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </td>
+            </tr>
+            <tr>
+                <th><label>Prefixes (if any):</label></th>
+                <td>
+                    <input asp-for="Prefixes" class="form-control" />
+                    <span asp-validation-for="Prefixes" class="text-danger"></span>
+                </td>
+            </tr>
+            <tr>
+                <th><label>Your password:</label></th>     
+                <td>
+                    <input asp-for="Password" class="form-control"/>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </td>
+            </tr>
+            <tr class="form-group">
+                <td>
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </td>
+            </tr>
+        </table>
+    </form>
+</body>
+
+
+</html>
