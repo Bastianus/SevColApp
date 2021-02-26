@@ -20,18 +20,30 @@ namespace SevColApp.Controllers
             _repo = repo;
         }
 
-        public IActionResult Index()
+        public IActionResult Login()
         {
             return View();
         }
 
         public async Task<IActionResult> LoggedIn()
         {
+            if (!IsThereACookie())
+            {
+                return RedirectToAction("Login");
+            }
+
             var id = GetUserIdFromCookie();
 
             var user = await _repo.FindUserById(id);
 
             return View("LoggedIn",user);
+        }
+
+        public IActionResult Logout()
+        {
+            if (IsThereACookie()) RemoveCookie();
+
+            return View();
         }
 
         [HttpPost]
@@ -69,10 +81,20 @@ namespace SevColApp.Controllers
 
             Response.Cookies.Append("UserId", userId.ToString(), option);
         }
+
+        private bool IsThereACookie()
+        {
+            return Request.Cookies.ContainsKey("UserId");
+        }
         
         private int GetUserIdFromCookie()
         {
             return Int32.Parse(HttpContext.Request.Cookies["UserId"]);
+        }
+
+        private void RemoveCookie()
+        {
+            Response.Cookies.Delete("UserId");
         }
     }
 }
