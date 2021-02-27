@@ -20,8 +20,18 @@ namespace SevColApp.Controllers
             _repo = repo;
         }
 
+        public IActionResult Create()
+        {
+            return View();
+        }
+
         public IActionResult Login()
         {
+            if (IsThereACookie())
+            {
+                return RedirectToAction("LoggedIn");
+            }
+
             return View();
         }
 
@@ -44,6 +54,21 @@ namespace SevColApp.Controllers
             if (IsThereACookie()) RemoveCookie();
 
             return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Login(User user)
+        {
+            if (_repo.LoginIsCorrect(user))
+            {
+                var userId = _repo.FindUserIdByLoginName(user.LoginName);
+                MakeACookie(userId);
+
+                return RedirectToAction(nameof(LoggedIn));
+            }
+
+            return BadRequest("Login name unknown or passwortd is incorrect");
         }
 
         [HttpPost]

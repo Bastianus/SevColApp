@@ -1,4 +1,5 @@
-﻿using SevColApp.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using SevColApp.Models;
 using System;
 using System.Linq;
 using System.Security.Cryptography;
@@ -17,7 +18,7 @@ namespace SevColApp.Repositories
 
         public async Task<int> AddUserIfHeDoesNotExits(User user)
         {
-            if (!_context.Users.Any(x => x.FirstName == user.FirstName && x.LastName == user.LastName))
+            if (!_context.Users.Any(x => x.LoginName == user.LoginName))
             {
                 user.PasswordHash = GetPasswordHash(user.Password);
 
@@ -26,7 +27,7 @@ namespace SevColApp.Repositories
                 await _context.SaveChangesAsync();
             }
 
-            return _context.Users.Single(x => x.FirstName == user.FirstName && x.LastName == user.LastName).Id;
+            return _context.Users.Single(x => x.LoginName == user.LoginName).Id;
         }
 
         public async Task<User> FindUserById(int id)
@@ -51,6 +52,23 @@ namespace SevColApp.Repositories
             var PasswordhashOfSavedUser = _context.Users.Find(userId).PasswordHash;
 
             return givenPasswordHash.SequenceEqual(PasswordhashOfSavedUser);
+        }
+
+        public bool LoginIsCorrect(User user)
+        {
+            var databaseUser = _context.Users.Where(x => x.LoginName == user.LoginName).FirstOrDefault();
+
+            if (databaseUser == null) return false;
+
+            if (IsPasswordCorrect(user.Password, databaseUser.Id)) return true;
+
+            return false;            
+        }
+
+        public int FindUserIdByLoginName(string name)
+        {
+            var userId = _context.Users.Where(x => x.LoginName == name).First().Id;
+            return userId;
         }
     }
 }

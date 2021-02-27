@@ -7,47 +7,33 @@
 <html>
 
 <body>
-    <p>Please input your name:</p>
-
-
-    <form asp-action="create">
+    <form asp-action="login">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <table>
+        <table class="table table-borderless table-sm">
             <tr>
-                <th><label>First name:</label></th>
+                <th class="text-left"><label>Login name:</label></th>
                 <td>
-                    <input asp-for="FirstName" class="form-control" />
-                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                    <input asp-for="LoginName" class="form-control" />
+                    <span asp-validation-for="LoginName" class="text-danger"></span>
                 </td>
             </tr>
             <tr>
-                <th><label>Last name:</label></th>
+                <th class="text-left"><label>Your password:</label></th>
                 <td>
-                    <input asp-for="LastName" class="form-control" />
-                    <span asp-validation-for="LastName" class="text-danger"></span>
-                </td>
-            </tr>
-            <tr>
-                <th><label>Prefixes (if any):</label></th>
-                <td>
-                    <input asp-for="Prefixes" class="form-control" />
-                    <span asp-validation-for="Prefixes" class="text-danger"></span>
-                </td>
-            </tr>
-            <tr>
-                <th><label>Your password:</label></th>     
-                <td>
-                    <input type="password" asp-for="Password" class="form-control"/>
+                    <input type="password" asp-for="Password" class="form-control" />
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </td>
             </tr>
             <tr class="form-group">
                 <td>
-                    <input type="submit" value="Create" class="btn btn-primary" />
+                    <input type="submit" value="Login" class="btn btn-primary" />
                 </td>
             </tr>
         </table>
     </form>
+    <div class="nav-item">
+        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Create">Create new account</a>
+    </div>
 </body>
 
 
