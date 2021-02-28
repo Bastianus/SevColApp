@@ -26,5 +26,10 @@ namespace SevColApp.Repositories
 
             return accounts;
         }
+
+        public async Task<BankAccount> GetBankAccountById(int id)
+        {
+            return await _context.BankAccounts.FindAsync(id);
+        }
     }
 }

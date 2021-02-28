@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using SevColApp.Models;
 using SevColApp.Repositories;
 using System;
-using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SevColApp.Controllers
@@ -40,29 +40,33 @@ namespace SevColApp.Controllers
             return View("Index", viewInput);
         }
 
-        public async Task<IActionResult> Details(int bankId)
+        public async Task<IActionResult> PasswordFill(int accountId)
         {
-            if (!IsThereACookie())
+            var account = await _repo.GetBankAccountById(accountId);
+
+            return View("PasswordFill", account);
+        }
+
+        public async Task<IActionResult> PasswordCheck(BankAccount passwordData)
+        {
+            var account = await _repo.GetBankAccountById(passwordData.Id);
+
+            var passwordHash = _userRepo.GetPasswordHash(passwordData.Password);
+
+            if(account.PasswordHash.SequenceEqual(passwordHash))
             {
-                return RedirectToAction("Login", "Home");
+                return RedirectToAction("Details", account);
             }
 
             return View();
         }
 
-        public IActionResult PasswordCheck()
-        {
-            return View();
+        public  IActionResult Details(BankAccount account)
+        { 
+            return View("Details", account);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult PasswordCheck(BankAccount account)
-        {
-            return RedirectToAction("Details");
-        }
-
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
             if (!IsThereACookie())
             {

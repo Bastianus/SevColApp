@@ -7,5 +7,6 @@ namespace SevColApp.Repositories
     public interface IBankRepository
     {
         Task<List<BankAccount>> GetBankAccountsOfUser(int userId);
+        Task<BankAccount> GetBankAccountById(int id);
     }
 }

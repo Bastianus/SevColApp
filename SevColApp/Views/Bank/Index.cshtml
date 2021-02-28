@@ -14,8 +14,6 @@
                 <tr>
                     <th scope="col">Account name</th>
                     <th scope="col">Bank</th>
-                    <th scope="col">Bank Account</th>
-                    <th scope="col">Current credit</th>
                     <th scope="col"></th>
                 </tr>
             </thead>
@@ -25,10 +23,8 @@
                     <tr>
                         <td>@account.AccountName</td>
                         <td>@account.Bank.Name</td>
-                        <td>@account.AccountNumber</td>
-                        <td>@account.Credit</td>
                         <td>
-                            <a asp-area="" asp-controller="Bank" asp-action="Details" asp-route-bankId=@account.Id class="btn btn-outline-dark">Choose</a>
+                            <a asp-area="" asp-controller="Bank" asp-action="PasswordFill" asp-route-accountId=@account.Id class="btn btn-outline-dark">Choose</a>
                         </td>
                     </tr>
                 }
