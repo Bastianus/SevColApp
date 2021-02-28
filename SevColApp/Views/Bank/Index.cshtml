@@ -5,7 +5,7 @@
 }
 
 <html>
-<body style="background-color: lawngreen">
+<body style="background-color: rgb(104,171,87)">
     <h1>Welcome, @Model.User.FullName, to the banking app</h1>
     @if (Model.BankAccounts.Count() > 0)
     {
@@ -16,6 +16,7 @@
                     <th scope="col">Bank</th>
                     <th scope="col">Bank Account</th>
                     <th scope="col">Current credit</th>
+                    <th scope="col"></th>
                 </tr>
             </thead>
             <tbody>
@@ -26,10 +27,14 @@
                         <td>@account.Bank.Name</td>
                         <td>@account.AccountNumber</td>
                         <td>@account.Credit</td>
+                        <td>
+                            <a asp-area="" asp-controller="Bank" asp-action="Details" asp-route-bankId=@account.Id class="btn btn-outline-dark">Choose</a>
+                        </td>
                     </tr>
                 }
             </tbody>
         </table>
     }
+    <a asp-area="" asp-controller="Bank" asp-action="Create" class="btn btn-outline-dark">Create a new account</a>
 </body>
 </html>

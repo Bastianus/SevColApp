@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SevColApp.Models;
 
 namespace SevColApp.Migrations
 {
     [DbContext(typeof(SevColContext))]
-    partial class SevColContextModelSnapshot : ModelSnapshot
+    [Migration("20210228200446_fix-stored-procedures")]
+    partial class fixstoredprocedures
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

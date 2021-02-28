@@ -26,7 +26,7 @@ namespace SevColApp.Controllers
         {
             if (!IsThereACookie())
             {
-                return RedirectToAction("Login");
+                return RedirectToAction("Login", "Home");
             }
 
             var id = GetUserIdFromCookie();
@@ -38,6 +38,38 @@ namespace SevColApp.Controllers
             viewInput.BankAccounts = await _repo.GetBankAccountsOfUser(id);   
 
             return View("Index", viewInput);
+        }
+
+        public async Task<IActionResult> Details(int bankId)
+        {
+            if (!IsThereACookie())
+            {
+                return RedirectToAction("Login", "Home");
+            }
+
+            return View();
+        }
+
+        public IActionResult PasswordCheck()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult PasswordCheck(BankAccount account)
+        {
+            return RedirectToAction("Details");
+        }
+
+        public async Task<IActionResult> Create()
+        {
+            if (!IsThereACookie())
+            {
+                return RedirectToAction("Login", "Home");
+            }
+
+            return View();
         }
 
         private bool IsThereACookie()
