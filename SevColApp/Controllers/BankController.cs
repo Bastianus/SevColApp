@@ -35,7 +35,7 @@ namespace SevColApp.Controllers
 
             viewInput.User = await _userRepo.FindUserById(id);
 
-            viewInput.BankAccounts = await _repo.GetBankAccountsOfUser(id);            
+            viewInput.BankAccounts = await _repo.GetBankAccountsOfUser(id);   
 
             return View("Index", viewInput);
         }
