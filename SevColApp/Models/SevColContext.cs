@@ -11,6 +11,7 @@ namespace SevColApp.Models
         public DbSet<User> Users { get; set; }
         public DbSet<Colony> Colonies { get; set; }
         public DbSet<Bank> Banks { get; set; }
+        public DbSet<BankAccount> BankAccounts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

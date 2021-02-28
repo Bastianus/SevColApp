@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SevColApp.Models;
 
 namespace SevColApp.Migrations
 {
     [DbContext(typeof(SevColContext))]
-    partial class SevColContextModelSnapshot : ModelSnapshot
+    [Migration("20210228155615_bankAccounts")]
+    partial class bankAccounts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -141,7 +143,7 @@ namespace SevColApp.Migrations
                     b.Property<string>("AccountNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("BankId")
+                    b.Property<int?>("BankId")
                         .HasColumnType("int");
 
                     b.Property<long>("Credit")
@@ -150,14 +152,9 @@ namespace SevColApp.Migrations
                     b.Property<long>("ExpectedIncome")
                         .HasColumnType("bigint");
 
-                    b.Property<int>("userId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("BankId");
-
-                    b.HasIndex("userId");
 
                     b.ToTable("BankAccounts");
                 });
@@ -260,19 +257,9 @@ namespace SevColApp.Migrations
                 {
                     b.HasOne("SevColApp.Models.Bank", "Bank")
                         .WithMany()
-                        .HasForeignKey("BankId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SevColApp.Models.User", "user")
-                        .WithMany()
-                        .HasForeignKey("userId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BankId");
 
                     b.Navigation("Bank");
-
-                    b.Navigation("user");
                 });
 #pragma warning restore 612, 618
         }

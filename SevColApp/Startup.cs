@@ -22,6 +22,7 @@ namespace SevColApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<IHomeRepository, HomeRepository>();
+            services.AddScoped<IBankRepository, BankRepository>();
 
             services.AddDbContext<SevColContext>(options =>
                 options.UseSqlServer(

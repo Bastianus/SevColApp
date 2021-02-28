@@ -1,0 +1,34 @@
+﻿@model SevColApp.Models.UserBankAccounts
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<html>
+<body>
+    <h1>Welcome, @Model.User.FullName, to the banking app</h1>
+
+    <table class="table table-borderless table-sm">
+        <thead>
+            <tr>
+                <th scope="col">Account name</th>
+                <th scope="col">Bank</th>
+                <th scope="col">Bank Account</th>
+                <th scope="col">Current credit</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var account in Model.BankAccounts)
+            {
+                <tr>
+                    <td>@account.AccountName</td>
+                    <td>@account.Bank.Name</td>
+                    <td>@account.AccountNumber</td>
+                    <td>@account.Credit</td>
+                </tr>
+            }
+        </tbody>
+        
+    </table>    
+</body>
+</html>
