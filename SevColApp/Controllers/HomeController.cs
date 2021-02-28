@@ -35,6 +35,16 @@ namespace SevColApp.Controllers
             return View();
         }
 
+        public IActionResult LoginUnknown()
+        {
+            if (IsThereACookie())
+            {
+                return RedirectToAction("LoggedIn");
+            }
+
+            return View();
+        }
+
         public async Task<IActionResult> LoggedIn()
         {
             if (!IsThereACookie())
@@ -68,7 +78,8 @@ namespace SevColApp.Controllers
                 return RedirectToAction(nameof(LoggedIn));
             }
 
-            return BadRequest("Login name unknown or passwortd is incorrect");
+            //return BadRequest("Login name unknown or password is incorrect");
+            return RedirectToAction(nameof(LoginUnknown));
         }
 
         [HttpPost]

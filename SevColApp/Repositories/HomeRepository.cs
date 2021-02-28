@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SevColApp.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -69,6 +70,12 @@ namespace SevColApp.Repositories
         {
             var userId = _context.Users.Where(x => x.LoginName == name).First().Id;
             return userId;
+        }
+
+        public async Task<List<User>> GetAllOtherUsers(int id)
+        {
+            var allUsers = await _context.Users.ToListAsync();
+            return allUsers.Where(x => x.Id != id).ToList();
         }
     }
 }
