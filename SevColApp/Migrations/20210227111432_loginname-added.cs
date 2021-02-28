@@ -10,7 +10,7 @@ namespace SevColApp.Migrations
                 name: "LoginName",
                 table: "Users",
                 type: "nvarchar(max)",
-                nullable: true);
+                nullable: true);            
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
