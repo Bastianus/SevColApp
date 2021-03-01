@@ -113,7 +113,7 @@ namespace SevColApp.Controllers
         {
             CookieOptions option = new CookieOptions();
 
-            option.Expires = DateTime.Now.AddSeconds(5);
+            option.Expires = DateTime.Now.AddDays(1);
 
             Response.Cookies.Append("UserId", userId.ToString(), option);
         }
