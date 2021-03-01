@@ -42,6 +42,11 @@ namespace SevColApp.Controllers
 
         public async Task<IActionResult> PasswordFill(int accountId)
         {
+            if (!IsThereACookie())
+            {
+                return RedirectToAction("Login", "Home");
+            }
+
             var account = await _repo.GetBankAccountById(accountId);
 
             return View("PasswordFill", account);
@@ -49,6 +54,11 @@ namespace SevColApp.Controllers
 
         public async Task<IActionResult> PasswordCheck(BankAccount passwordData)
         {
+            if (!IsThereACookie())
+            {
+                return RedirectToAction("Login", "Home");
+            }
+
             var account = await _repo.GetBankAccountById(passwordData.Id);
 
             var passwordHash = _userRepo.GetPasswordHash(passwordData.Password);
@@ -62,7 +72,12 @@ namespace SevColApp.Controllers
         }
 
         public  IActionResult Details(BankAccount account)
-        { 
+        {
+            if (!IsThereACookie())
+            {
+                return RedirectToAction("Login", "Home");
+            }
+
             return View("Details", account);
         }
 
