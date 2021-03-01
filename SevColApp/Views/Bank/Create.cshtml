@@ -1,4 +1,4 @@
-﻿@model SevColApp.Models.BankAccount
+﻿@model SevColApp.Models.InputOutputAccountCreate
 
 @{
     ViewData["Title"] = "Home Page";
@@ -6,6 +6,58 @@
 <html>
 
 <body style="background-color: rgb(104,171,87)">
-    <p>Create an account komt hier!</p>
+
+    <form asp-action="Create">
+        <table class="table table-borderless">
+            <tr>
+                <th class="text-right"> Account name: </th>
+                <td>
+                    <input asp-for="AccountName" class="form-control col-6" />
+                    <span asp-validation-for="AccountName" class="text-danger"></span>
+                </td>
+            </tr>
+            <tr>
+                <th class="text-right">Bank:</th>
+                <td class="input-group">
+                    <select asp-for="BankName" class="custom-select" id="inputGroupSelect04">
+                        <option selected>Choose your desired bank</option>
+                        @foreach (var bank in @Model.Banks)
+                        {
+                            <option>@bank.Name</option>
+                        }
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th>Password for your new account:</th>
+                <td>
+                    <input type="password" asp-for="Password" class="form-control col-6" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </td>
+            </tr>
+            @if (!@Model.UserHasAccount)
+            {
+            <tr>
+                <th class="text-right"> Wealth level:</th>
+                <td class="input-group">
+                    <select asp-for="BankName" class="custom-select" id="inputGroupSelect04">
+                        <option selected>Choose your wealth level</option>
+                        <option>Normal</option>
+                        <option>Civilian</option>
+                        <option>Wealthy</option>
+                        <option>Very wealthy</option>
+                    </select>
+                </td>
+            </tr>
+            }
+            <tr class="form-group">
+                <th></th>
+                <td>
+                    <input type="submit" value="Create" class="btn btn-outline-dark" />
+                </td>
+            </tr>
+
+        </table>
+    </form>
 </body>
 </html>

@@ -81,14 +81,32 @@ namespace SevColApp.Controllers
             return View("Details", account);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             if (!IsThereACookie())
             {
                 return RedirectToAction("Login", "Home");
             }
+            var userId = GetUserIdFromCookie();            
 
-            return View();
+            var input = new InputOutputAccountCreate();
+
+            input.UserHasAccount = (await _repo.GetBankAccountsOfUser(userId)).Any();
+
+            input.Banks = await _repo.GetAllBanks();
+
+            return View("Create", input);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(InputOutputAccountCreate input)
+        {
+            var userId = GetUserIdFromCookie();
+
+            _repo.CreateNewAccount(input, userId);
+
+            return RedirectToAction("Index");
         }
 
         private bool IsThereACookie()
