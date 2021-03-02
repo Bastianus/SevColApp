@@ -121,7 +121,6 @@ namespace SevColApp.Controllers
 
         public async Task<IActionResult> Transfer(int accountId)
         {
-
             var data = new InputOutputTransfer();
 
             data.BankAccount = await _repo.GetBankAccountById(accountId);
@@ -141,7 +140,7 @@ namespace SevColApp.Controllers
 
                 if (passwordIsCorrect)
                 {
-                    transfer = await _repo.ExecuteTransfer(transfer);
+                    transfer = _repo.ExecuteTransfer(transfer);
                 }
                 else
                 {

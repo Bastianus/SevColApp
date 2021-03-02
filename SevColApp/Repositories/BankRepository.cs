@@ -70,7 +70,7 @@ namespace SevColApp.Repositories
             _context.SaveChanges();
         }
 
-        public async Task<Transfer> ExecuteTransfer(Transfer transfer)
+        public Transfer ExecuteTransfer(Transfer transfer)
         {
             try
             {
