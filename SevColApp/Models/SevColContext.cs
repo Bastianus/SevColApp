@@ -12,6 +12,12 @@ namespace SevColApp.Models
         public DbSet<Colony> Colonies { get; set; }
         public DbSet<Bank> Banks { get; set; }
         public DbSet<BankAccount> BankAccounts { get; set; }
+        public DbSet<Transfer> Transfers { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.EnableSensitiveDataLogging();
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -31,11 +31,11 @@ namespace SevColApp.Controllers
 
             var id = GetUserIdFromCookie();
 
-            var viewInput = new UserBankAccounts();            
+            var viewInput = new UserBankAccounts();
 
             viewInput.User = await _userRepo.FindUserById(id);
 
-            viewInput.BankAccounts = await _repo.GetBankAccountsOfUser(id);   
+            viewInput.BankAccounts = await _repo.GetBankAccountsOfUser(id);
 
             return View("Index", viewInput);
         }
@@ -63,7 +63,7 @@ namespace SevColApp.Controllers
 
             var passwordHash = _userRepo.GetPasswordHash(passwordData.Password);
 
-            if(account.PasswordHash.SequenceEqual(passwordHash))
+            if (account.PasswordHash.SequenceEqual(passwordHash))
             {
                 return RedirectToAction("Details", account);
             }
@@ -71,7 +71,7 @@ namespace SevColApp.Controllers
             return View();
         }
 
-        public  IActionResult Details(BankAccount account)
+        public IActionResult Details(BankAccount account)
         {
             if (!IsThereACookie())
             {
@@ -87,7 +87,7 @@ namespace SevColApp.Controllers
             {
                 return RedirectToAction("Login", "Home");
             }
-            var userId = GetUserIdFromCookie();            
+            var userId = GetUserIdFromCookie();
 
             var input = new InputOutputAccountCreate();
 
@@ -107,6 +107,25 @@ namespace SevColApp.Controllers
             _repo.CreateNewAccount(input, userId);
 
             return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> Transfer(int accountId)
+        {
+
+            var data = new InputOutputTransfer();
+
+            data.BankAccount = await _repo.GetBankAccountById(accountId);
+
+            return View("Transfer", data);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Transfer(InputOutputTransfer input)
+        {
+            var transfer = await _repo.ExecuteTransfer(input.Transfer);
+
+            return View("TransferResult", transfer);
         }
 
         private bool IsThereACookie()

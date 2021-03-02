@@ -25,8 +25,10 @@ namespace SevColApp
             services.AddScoped<IBankRepository, BankRepository>();
 
             services.AddDbContext<SevColContext>(options =>
+            {
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));            
+                    Configuration.GetConnectionString("DefaultConnection"));
+            });            
 
             services.AddControllersWithViews();
         }

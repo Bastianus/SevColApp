@@ -10,5 +10,6 @@ namespace SevColApp.Repositories
         Task<BankAccount> GetBankAccountById(int id);
         Task<List<Bank>> GetAllBanks();
         void CreateNewAccount(InputOutputAccountCreate input, int userId);
+        Task<Transfer> ExecuteTransfer(Transfer transfer);
     }
 }

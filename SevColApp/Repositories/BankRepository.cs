@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace SevColApp.Repositories
 {
@@ -67,6 +68,29 @@ namespace SevColApp.Repositories
             _context.BankAccounts.Add(newAccount);
 
             _context.SaveChanges();
+        }
+
+        public async Task<Transfer> ExecuteTransfer(Transfer transfer)
+        {
+            try
+            {
+                using (TransactionScope scope = new TransactionScope())
+                {
+                    RemoveAmountFromPayer(transfer);
+                    AddAmountToReceiver(transfer);
+
+                    _context.SaveChanges();
+
+                    scope.Complete();
+                }
+            }            
+            catch (TransactionAbortedException ex)
+            {
+                transfer.Error = ex.Message;
+            }
+
+            transfer.Time = DateTime.Now;
+            return transfer;
         }
 
         private byte[] GetPasswordHash(string password)
@@ -182,5 +206,22 @@ namespace SevColApp.Repositories
 
             return allBankAccountNumbers;
         }
+
+        private void RemoveAmountFromPayer(Transfer transfer)
+        {
+            var payingAccount = _context.BankAccounts.Where(x => x.AccountNumber == transfer.PayingAccountNumber).FirstOrDefault() ?? throw new TransactionAbortedException("No such account exists");
+
+            if (transfer.Amount > payingAccount.Credit) throw new TransactionAbortedException("Not enough money on paying account");
+
+            payingAccount.Credit -= transfer.Amount;
+        }
+
+        private void AddAmountToReceiver(Transfer transfer)
+        {
+            var receivingAccount = _context.BankAccounts.Where(x => x.AccountNumber == transfer.ReceivingAccountNumber).FirstOrDefault() ?? throw new TransactionAbortedException("No such account exists");
+
+            receivingAccount.Credit += transfer.Amount;
+        }
+
     }
 }

@@ -1,0 +1,22 @@
+﻿@model SevColApp.Models.Transfer
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<html>
+<body style="background-color: rgb(104,171,87)">
+    @if (string.IsNullOrEmpty(Model.Error))
+    {
+        <h3>Transfer complete</h3>
+        <h5>On @Model.Time a transfer of @Model.Amount has been completed from @Model.PayingAccountNumber to @Model.ReceivingAccountNumber.</h5>
+    }
+    @if (!string.IsNullOrEmpty(Model.Error))
+    {
+        <h3 class="text-warning">Transfer was cancelled.</h3>
+        <h5 class="text-warning">@Model.Error</h5>
+    }
+    
+    <a asp-area="" asp-controller="Bank" asp-action="Index" class="btn btn-light">Back to banking</a>
+</body>
+</html>

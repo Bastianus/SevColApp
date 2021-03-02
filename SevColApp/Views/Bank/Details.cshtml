@@ -23,8 +23,10 @@
                 <td>@Model.Credit</td>
             </tr>
         </tbody>
-        
+
     </table>
+
+    <a asp-area="" asp-controller="Bank" asp-action="Transfer" asp-route-accountId="@Model.Id" class="btn btn-light">Make a transfer</a>
 
 </body>
 </html>

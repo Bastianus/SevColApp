@@ -13,6 +13,7 @@
             <thead>
                 <tr>
                     <th scope="col">Account name</th>
+                    <th scope="col">Account number</th>
                     <th scope="col">Bank</th>
                     <th scope="col"></th>
                 </tr>
@@ -22,15 +23,16 @@
                 {
                     <tr>
                         <td>@account.AccountName</td>
+                        <td>@account.AccountNumber</td>
                         <td>@account.Bank.Name</td>
                         <td>
-                            <a asp-area="" asp-controller="Bank" asp-action="PasswordFill" asp-route-accountId=@account.Id class="btn btn-outline-dark">Choose</a>
+                            <a asp-area="" asp-controller="Bank" asp-action="PasswordFill" asp-route-accountId=@account.Id class="btn btn-light">Choose</a>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
     }
-    <a asp-area="" asp-controller="Bank" asp-action="Create" class="btn btn-outline-dark">Create a new account</a>
+    <a asp-area="" asp-controller="Bank" asp-action="Create" class="btn btn-light">Create a new account</a>
 </body>
 </html>

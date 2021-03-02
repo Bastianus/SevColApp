@@ -1,0 +1,48 @@
+﻿@model SevColApp.Models.InputOutputTransfer
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+<html>
+
+<body style="background-color: rgb(104,171,87)">
+
+    <form asp-action="Transfer">
+        <table class="table table-borderless w-auto">
+
+            <tbody>
+                <tr class="table-info">
+                    <th scope="row">From account:</th>
+                    <td>@Model.BankAccount.AccountNumber</td>
+                    <td>
+                        <input asp-for="Transfer.PayingAccountNumber" type="hidden" value="@Model.BankAccount.AccountNumber" />
+                    </td>
+                </tr>
+                <tr class="table-info">
+                    <th scope="row">To account:</th>
+                    <td>
+                        <input asp-for="Transfer.ReceivingAccountNumber" class="form-control col-6" />
+                        <span asp-validation-for="Transfer.ReceivingAccountNumber" class="text-danger"></span>
+                    </td>
+                </tr>
+                <tr class="table-info">
+                    <th scope="row">Amount (in credits):</th>
+                    <td>
+                        <input asp-for="Transfer.Amount" class="form-control col-6" />
+                        <span asp-validation-for="Transfer.Amount" class="text-danger"></span>
+                    </td>
+                </tr>
+                <tr class="form-group">
+                    <th></th>
+                    <td>
+                        <input type="submit" value="Done" class="btn btn-light" />
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+    </form>
+</body>
+
+</html>
