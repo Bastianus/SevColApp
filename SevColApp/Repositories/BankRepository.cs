@@ -93,6 +93,15 @@ namespace SevColApp.Repositories
             return transfer;
         }
 
+        public async Task<bool> IsAccountPasswordCorrect(string accountNumber, string password)
+        {
+            var account = await _context.BankAccounts.Where(x => x.AccountNumber == accountNumber).FirstOrDefaultAsync();
+
+            var passwordHash = GetPasswordHash(password);
+
+            return account.PasswordHash.SequenceEqual(passwordHash);
+        }
+
         private byte[] GetPasswordHash(string password)
         {
             if (string.IsNullOrEmpty(password)) return new byte[] { };
@@ -222,6 +231,5 @@ namespace SevColApp.Repositories
 
             receivingAccount.Credit += transfer.Amount;
         }
-
     }
 }

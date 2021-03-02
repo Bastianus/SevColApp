@@ -11,5 +11,6 @@ namespace SevColApp.Repositories
         Task<List<Bank>> GetAllBanks();
         void CreateNewAccount(InputOutputAccountCreate input, int userId);
         Task<Transfer> ExecuteTransfer(Transfer transfer);
+        Task<bool> IsAccountPasswordCorrect(string accountNumber, string password);
     }
 }

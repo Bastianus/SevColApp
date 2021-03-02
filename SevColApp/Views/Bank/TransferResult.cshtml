@@ -8,8 +8,7 @@
 <body style="background-color: rgb(104,171,87)">
     @if (string.IsNullOrEmpty(Model.Error))
     {
-        <h3>Transfer complete</h3>
-        <h5>On @Model.Time a transfer of @Model.Amount has been completed from @Model.PayingAccountNumber to @Model.ReceivingAccountNumber.</h5>
+        <h5>A transfer of @Model.Amount Credits has been completed from @Model.PayingAccountNumber to @Model.ReceivingAccountNumber.</h5>
     }
     @if (!string.IsNullOrEmpty(Model.Error))
     {

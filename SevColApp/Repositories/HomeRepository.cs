@@ -36,7 +36,7 @@ namespace SevColApp.Repositories
             return await _context.Users.FindAsync(id);
         }
 
-        public byte[] GetPasswordHash(string password)
+        private byte[] GetPasswordHash(string password)
         {
             if (string.IsNullOrEmpty(password)) return new byte[] { };
 

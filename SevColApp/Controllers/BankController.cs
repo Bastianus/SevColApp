@@ -54,6 +54,11 @@ namespace SevColApp.Controllers
 
         public async Task<IActionResult> PasswordCheck(BankAccount passwordData)
         {
+            if (!ModelState.IsValid)
+            {
+                RedirectToAction("Privacy", "Home", null);
+            }
+
             if (!IsThereACookie())
             {
                 return RedirectToAction("Login", "Home");
@@ -61,9 +66,9 @@ namespace SevColApp.Controllers
 
             var account = await _repo.GetBankAccountById(passwordData.Id);
 
-            var passwordHash = _userRepo.GetPasswordHash(passwordData.Password);
+            var passwordIsCorrect = await _repo.IsAccountPasswordCorrect(account.AccountNumber, passwordData.Password);
 
-            if (account.PasswordHash.SequenceEqual(passwordHash))
+            if (passwordIsCorrect)
             {
                 return RedirectToAction("Details", account);
             }
@@ -102,6 +107,11 @@ namespace SevColApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(InputOutputAccountCreate input)
         {
+            if (!ModelState.IsValid)
+            {
+                RedirectToAction("Privacy", "Home", null);
+            }
+
             var userId = GetUserIdFromCookie();
 
             _repo.CreateNewAccount(input, userId);
@@ -123,7 +133,26 @@ namespace SevColApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Transfer(InputOutputTransfer input)
         {
-            var transfer = await _repo.ExecuteTransfer(input.Transfer);
+            var transfer = input.Transfer;
+
+            if (ModelState.IsValid)
+            {
+                var passwordIsCorrect = await _repo.IsAccountPasswordCorrect(input.Transfer.PayingAccountNumber, input.Password);
+
+                if (passwordIsCorrect)
+                {
+                    transfer = await _repo.ExecuteTransfer(transfer);
+                }
+                else
+                {
+                    transfer.Error = "The account password was incorrect";
+                }
+                
+            }
+            else
+            {
+                RedirectToAction("Privacy", "Home", null);
+            }
 
             return View("TransferResult", transfer);
         }
