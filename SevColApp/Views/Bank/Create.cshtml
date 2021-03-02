@@ -29,7 +29,7 @@
                 </td>
             </tr>
             <tr>
-                <th>Password for your new account:</th>
+                <th class="text-right">Password for your new account:</th>
                 <td>
                     <input type="password" asp-for="Password" class="form-control col-6" />
                     <span asp-validation-for="Password" class="text-danger"></span>
@@ -40,7 +40,7 @@
             <tr>
                 <th class="text-right"> Wealth level:</th>
                 <td class="input-group">
-                    <select asp-for="BankName" class="custom-select" id="inputGroupSelect04">
+                    <select asp-for="WealthLevel" class="custom-select" id="inputGroupSelect04">
                         <option selected>Choose your wealth level</option>
                         <option>Normal</option>
                         <option>Civilian</option>
