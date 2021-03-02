@@ -66,24 +66,26 @@ namespace SevColApp.Controllers
 
             var account = await _repo.GetBankAccountById(passwordData.Id);
 
+            var data = new BankAccountDetails() { Id = account.Id, AccountName = account.AccountName, AccountNumber = account.AccountNumber, Credit = account.Credit };
+
             var passwordIsCorrect = await _repo.IsAccountPasswordCorrect(account.AccountNumber, passwordData.Password);
 
             if (passwordIsCorrect)
             {
-                return RedirectToAction("Details", account);
+                return RedirectToAction("Details", data);
             }
 
             return View();
         }
 
-        public IActionResult Details(BankAccount account)
+        public IActionResult Details(BankAccountDetails data)
         {
             if (!IsThereACookie())
             {
                 return RedirectToAction("Login", "Home");
             }
 
-            return View("Details", account);
+            return View("Details", data);
         }
 
         public async Task<IActionResult> Create()
