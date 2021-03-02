@@ -103,6 +103,22 @@ namespace SevColApp.Controllers
             return View();
         }
 
+        public IActionResult DeleteUser()
+        {
+            if (!IsThereACookie())
+            {
+                return RedirectToAction("Login");
+            }
+
+            var id = GetUserIdFromCookie();
+
+            _repo.DeleteUserById(id);
+
+            RemoveCookie();
+
+            return RedirectToAction("Login");
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

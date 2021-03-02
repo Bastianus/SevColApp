@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SevColApp.Models;
 
-namespace SevColApp.Models
+namespace SevColApp.Context
 {
     public class SevColContext : DbContext
     {
@@ -13,11 +14,6 @@ namespace SevColApp.Models
         public DbSet<Bank> Banks { get; set; }
         public DbSet<BankAccount> BankAccounts { get; set; }
         public DbSet<Transfer> Transfers { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.EnableSensitiveDataLogging();
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SevColApp.Context;
 using SevColApp.Models;
 using System;
 using System.Collections.Generic;
@@ -76,6 +77,19 @@ namespace SevColApp.Repositories
         {
             var allUsers = await _context.Users.ToListAsync();
             return allUsers.Where(x => x.Id != id).ToList();
+        }
+
+        public void DeleteUserById(int id)
+        {
+            var user = _context.Users.Find(id);
+
+            var usersBankAccounts = _context.BankAccounts.Where(x => x.userId == id).ToList();
+
+            usersBankAccounts.ForEach(account => _context.BankAccounts.Remove(account));
+
+            _context.Users.Remove(user);
+
+            _context.SaveChanges();
         }
     }
 }

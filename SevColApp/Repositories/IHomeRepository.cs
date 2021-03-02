@@ -12,5 +12,6 @@ namespace SevColApp.Repositories
         bool LoginIsCorrect(User user);
         int FindUserIdByLoginName(string name);
         Task<List<User>> GetAllOtherUsers(int id);
+        void DeleteUserById(int id);
     }
 }
