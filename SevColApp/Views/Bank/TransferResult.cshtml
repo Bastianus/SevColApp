@@ -5,10 +5,10 @@
 }
 
 <html>
-<body style="background-color: rgb(104,171,87)">
+<body class="bankingpage">
     @if (string.IsNullOrEmpty(Model.Error))
     {
-        <h5>A transfer of @Model.Amount Credits has been completed from @Model.PayingAccountNumber to @Model.ReceivingAccountNumber.</h5>
+        <h5 class="bankingtext">A transfer of @Model.Amount Credits has been completed from @Model.PayingAccountNumber to @Model.ReceivingAccountNumber.</h5>
     }
     @if (!string.IsNullOrEmpty(Model.Error))
     {

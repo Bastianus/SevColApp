@@ -5,12 +5,12 @@
 }
 <html>
 
-<body style="background-color: rgb(104,171,87)">
+<body  class="bankingpage">
 
     <form asp-action="Create">
         <table class="table table-borderless">
             <tr>
-                <th class="text-right"> Account name: </th>
+                <th class="text-right bankingtext"> Account name: </th>
                 <td>
                     <input asp-for="AccountName" class="form-control col-6" />
                     <span asp-validation-for="AccountName" class="text-danger"></span>

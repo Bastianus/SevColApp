@@ -77,6 +77,14 @@ body {
     background-image: url('https://sevcol.nl/wp-content/uploads/2021/03/privacy.jpg');
 }
 
+.bankingpage {
+    background-image: url('https://sevcol.nl/wp-content/uploads/2021/03/banking.jpg')
+}
+
+.bankingtext {
+    color: #f8f9fa;
+}
+
 .footer {
   position: absolute;
   bottom: 0;

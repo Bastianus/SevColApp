@@ -5,26 +5,26 @@
 }
 
 <html>
-<body style="background-color: rgb(104,171,87)">
-    <h1>Welcome, @Model.User.FullName, to the banking app</h1>
+<body class="bankingpage">
+    <h1 class="bankingtext">Welcome, @Model.User.FullName, to the banking app</h1>
     @if (Model.BankAccounts.Count() > 0)
     {
         <table class="table table-borderless table-sm">
             <thead>
                 <tr>
-                    <th scope="col">Account name</th>
-                    <th scope="col">Account number</th>
-                    <th scope="col">Bank</th>
-                    <th scope="col"></th>
+                    <th class="bankingtext" scope="col">Account name</th>
+                    <th class="bankingtext" scope="col">Account number</th>
+                    <th class="bankingtext" scope="col">Bank</th>
+                    <th class="bankingtext" scope="col"></th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var account in Model.BankAccounts)
                 {
                     <tr>
-                        <td>@account.AccountName</td>
-                        <td>@account.AccountNumber</td>
-                        <td>@account.Bank.Name</td>
+                        <td class="bankingtext">@account.AccountName</td>
+                        <td class="bankingtext">@account.AccountNumber</td>
+                        <td class="bankingtext">@account.Bank.Name</td>
                         <td>
                             <a asp-area="" asp-controller="Bank" asp-action="PasswordFill" asp-route-accountId=@account.Id class="btn btn-light">Choose</a>
                         </td>

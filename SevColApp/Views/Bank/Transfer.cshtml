@@ -5,35 +5,33 @@
 }
 <html>
 
-<body style="background-color: rgb(104,171,87)">
+<body  class="bankingpage">
 
     <form asp-action="Transfer">
         <table class="table table-borderless w-auto">
-
-            <tbody>
-                <tr class="table-info">
-                    <th scope="row">From account:</th>
-                    <td>@Model.BankAccount.AccountNumber</td>
+                <tr>
+                    <th scope="row" class="bankingtext">From account:</th>
+                    <td class="bankingtext">@Model.BankAccount.AccountNumber</td>
                     <td>
                         <input asp-for="Transfer.PayingAccountNumber" type="hidden" value="@Model.BankAccount.AccountNumber" />
                     </td>
                 </tr>
-                <tr class="table-info">
-                    <th scope="row">To account:</th>
+                <tr>
+                    <th scope="row" class="bankingtext">To account:</th>
                     <td>
                         <input asp-for="Transfer.ReceivingAccountNumber" class="form-control col-6" />
                         <span asp-validation-for="Transfer.ReceivingAccountNumber" class="text-danger"></span>
                     </td>
                 </tr>
-                <tr class="table-info">
-                    <th scope="row">Amount (in credits):</th>
+                <tr>
+                    <th scope="row" class="bankingtext">Amount (in credits):</th>
                     <td>
                         <input asp-for="Transfer.Amount" class="form-control col-6" />
                         <span asp-validation-for="Transfer.Amount" class="text-danger"></span>
                     </td>
                 </tr>
-                <tr class="table-info">
-                    <th scope="row">Password of your account:</th>
+                <tr>
+                    <th scope="row" class="bankingtext">Password of your account:</th>
                     <td>
                         <input type="password" asp-for="Password" class="form-control col-6" />
                         <span asp-validation-for="Password" class="text-danger"></span>
@@ -45,9 +43,6 @@
                         <input type="submit" value="Done" class="btn btn-light" />
                     </td>
                 </tr>
-
-            </tbody>
-
         </table>
     </form>
 </body>
