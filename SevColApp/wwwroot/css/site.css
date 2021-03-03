@@ -1,6 +1,9 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
+.background {
+    background-image: url('file:///C:\GIT\SevColApp\SevColApp\wwwroot\css\images\1080p-HD-Space-Wallpaper.jpg');
+}
 a.navbar-brand {
     white-space: normal;
     text-align: center;
@@ -9,7 +12,7 @@ a.navbar-brand {
 
 /* Provide sufficient contrast against white background */
 a {
-  color: #0366d6;
+    color: #0366d6;
 }
 
 .btn-primary {
@@ -61,7 +64,17 @@ html {
 body {
     /* Margin bottom by footer height */
     margin-bottom: 60px;
-    background-color: cornflowerblue;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+.userpage {
+    background-image: url('https://sevcol.nl/wp-content/uploads/2021/03/space.jpg');
+}
+
+.privacypage {
+    background-image: url('https://sevcol.nl/wp-content/uploads/2021/03/privacy.jpg');
 }
 
 .footer {

@@ -14,8 +14,4 @@
     <PackageReference Include="Ngrok.AspNetCore" Version="1.0.6" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\css\images\" />
-  </ItemGroup>
-
 </Project>

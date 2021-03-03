@@ -6,19 +6,20 @@
 
 <html>
 
-<body class="homebody">
+<body class="userpage">
     <form asp-action="login">
+
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <table class="table table-borderless table-sm">
             <tr>
-                <th class="text-right"><label>Login name:</label></th>
+                <th class="text-right text-light"><label>Login name:</label></th>
                 <td>
                     <input asp-for="LoginName" class="form-control col-6" />
                     <span asp-validation-for="LoginName" class="text-danger"></span>
                 </td>
             </tr>
             <tr>
-                <th class="text-right"><label>Your password:</label></th>
+                <th class="text-right text-light"><label>Your password:</label></th>
                 <td>
                     <input type="password" asp-for="Password" class="form-control col-6" />
                     <span asp-validation-for="Password" class="text-danger"></span>
@@ -28,7 +29,7 @@
                 <th></th>
                 <td>
                     <input type="submit" value="Login" class="btn btn-light" />
-                </td>                
+                </td>
             </tr>
             <tr>
                 <th></th>
@@ -37,6 +38,7 @@
                 </td>
             </tr>
         </table>
+
     </form>
 </body>
 
