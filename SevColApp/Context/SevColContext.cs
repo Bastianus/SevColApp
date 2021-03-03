@@ -37,7 +37,7 @@ namespace SevColApp.Context
                 new Bank(7, "Wells-Morgan", "WEM", 4),
                 new Bank(8, "Union Faction Bank", "UFB", 4),
                 new Bank(9, "Saturnians Abroad Support", "SAS", 5),
-                new Bank(10, "Pure Money Banking", "PMB", 6),
+                new Bank(10, "Rock Steady Finance", "RSF", 6),
                 new Bank(11, "Sock Drawer Bank", "SDB", 6),
                 new Bank(12, "The Enlightened Bank", "TEB", 7)
                 );
