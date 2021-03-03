@@ -83,10 +83,6 @@ namespace SevColApp.Repositories
         {
             var user = _context.Users.Find(id);
 
-            var usersBankAccounts = _context.BankAccounts.Where(x => x.userId == id).ToList();
-
-            usersBankAccounts.ForEach(account => _context.BankAccounts.Remove(account));
-
             _context.Users.Remove(user);
 
             _context.SaveChanges();
