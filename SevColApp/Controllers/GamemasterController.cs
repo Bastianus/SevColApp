@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SevColApp.Helpers;
+using SevColApp.Models;
 using SevColApp.Repositories;
 
 namespace SevColApp.Controllers
@@ -8,19 +10,21 @@ namespace SevColApp.Controllers
     public class GamemasterController : Controller
     {
         private readonly ILogger<GamemasterController> _logger;
+        private readonly IGamemasterRepository _repo;
         private readonly IHomeRepository _userRepo;
-        private readonly IBankRepository _bankRepo;
+        private readonly CookieHelper _cookieHelper;
 
-        public GamemasterController(ILogger<GamemasterController> logger, IHomeRepository homeRepo, IBankRepository bankRepo)
+        public GamemasterController(ILogger<GamemasterController> logger, IGamemasterRepository repo, IHomeRepository userRepo, CookieHelper cookieHelper)
         {
             _logger = logger;
-            _userRepo = homeRepo;
-            _bankRepo = bankRepo;
+            _repo = repo;
+            _userRepo = userRepo;
+            _cookieHelper = cookieHelper;
         }
 
         public IActionResult Index()
         {
-            if (!IsThereAGameMasterCookie())
+            if (!_cookieHelper.IsThereAGameMasterCookie())
             {
                 return RedirectToAction("Login", "Home");
             }
@@ -28,14 +32,32 @@ namespace SevColApp.Controllers
             return View();
         }
 
-        private bool IsThereAGameMasterCookie()
+        public IActionResult ChangeUserPassword()
         {
-            if (Request.Cookies.ContainsKey("UserId")) 
+            if (!_cookieHelper.IsThereAGameMasterCookie())
             {
-                return HttpContext.Request.Cookies["UserId"] == "7777777";
-            };
+                return RedirectToAction("Login", "Home");
+            }
 
-            return false;
+            return View();
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ChangeUserPassword(UserPasswordChange input)
+        {
+            if (!ModelState.IsValid)
+            {
+                RedirectToAction("Index");
+            }
+
+            var userId = _userRepo.FindUserIdByLoginName(input.UserLoginName);
+
+            _repo.ChangeUserPassword(userId, input.NewPassword);
+
+            return View("UserPasswordChanged", input);
+        }
+
+        
     }
 }

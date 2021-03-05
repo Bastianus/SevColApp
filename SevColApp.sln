@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31019.35
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevColApp", "SevColApp\SevColApp.csproj", "{9C8E2A86-D92D-48A7-914C-924C9EBE198D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevColApp", "SevColApp\SevColApp.csproj", "{9C8E2A86-D92D-48A7-914C-924C9EBE198D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

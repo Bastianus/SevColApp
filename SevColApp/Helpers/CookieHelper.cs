@@ -33,5 +33,15 @@ namespace SevColApp.Helpers
 
             _context.HttpContext.Response.Cookies.Append("UserId", userId.ToString(), option);
         }
+
+        public bool IsThereAGameMasterCookie()
+        {
+            if (_context.HttpContext.Request.Cookies.ContainsKey("UserId"))
+            {
+                return _context.HttpContext.Request.Cookies["UserId"] == "7777777";
+            };
+
+            return false;
+        }
     }
 }

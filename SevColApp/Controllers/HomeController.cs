@@ -54,15 +54,15 @@ namespace SevColApp.Controllers
 
             var user = await _repo.FindUserById(id);
 
-            return View("LoggedIn",user);
+            return View("LoggedIn", user);
         }
 
         public IActionResult Logout()
         {
-            if (_cookieHelper.IsThereACookie()) 
+            if (_cookieHelper.IsThereACookie())
             {
                 _cookieHelper.RemoveCookie();
-            }           
+            }
 
             return View();
         }
@@ -71,7 +71,7 @@ namespace SevColApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Login(User user)
         {
-            if (!ModelState.IsValid)
+            if (string.IsNullOrEmpty(user.LoginName) || string.IsNullOrEmpty(user.Password))
             {
                 return RedirectToAction("Privacy");
             }
