@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SevColApp.Helpers;
 using SevColApp.Models;
 
 namespace SevColApp.Context
@@ -41,6 +42,9 @@ namespace SevColApp.Context
                 new Bank(11, "Sock Drawer Bank", "SDB", 6),
                 new Bank(12, "The Enlightened Bank", "TEB", 7)
                 );
+
+            modelBuilder.Entity<User>().HasData(
+                new User() { Id = 7777777, LoginName = "GameMaster",FirstName = "SevCol", Prefixes = "Game", LastName = "Master", PasswordHash = PasswordHelper.GetPasswordHash("ForRealsies") });
         }
     }
 }

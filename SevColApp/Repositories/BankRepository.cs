@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SevColApp.Context;
+using SevColApp.Helpers;
 using SevColApp.Models;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace SevColApp.Repositories
 {
     public class BankRepository : IBankRepository
     {
-        private SevColContext _context;
+        private readonly SevColContext _context;
         public BankRepository(SevColContext context)
         {
             _context = context;
@@ -50,21 +51,22 @@ namespace SevColApp.Repositories
 
             input.UserHasAccount = _context.BankAccounts.Any(x => x.userId == userId);
 
-            var newAccount = new BankAccount();
+            var newAccount = new BankAccount
+            {
+                AccountName = input.AccountName,
 
-            newAccount.AccountName = input.AccountName;
+                AccountNumber = CreateAccountNumber(bank),
 
-            newAccount.AccountNumber = CreateAccountNumber(bank);
+                BankId = bank.Id,
 
-            newAccount.BankId = bank.Id;
+                Credit = CreditHelper.DetermineStartingCredit(input.UserHasAccount, input.WealthLevel),
 
-            newAccount.Credit = DetermineStartingCredit(input.UserHasAccount, input.WealthLevel);
+                ExpectedIncome = CreditHelper.DetermineExpectedIncome(input.UserHasAccount, input.WealthLevel),
 
-            newAccount.ExpectedIncome = DetermineExpectedIncome(input.UserHasAccount, input.WealthLevel);
+                PasswordHash = PasswordHelper.GetPasswordHash(input.Password),
 
-            newAccount.PasswordHash = GetPasswordHash(input.Password);
-
-            newAccount.userId = userId;
+                userId = userId
+            };
 
             _context.BankAccounts.Add(newAccount);
 
@@ -75,15 +77,13 @@ namespace SevColApp.Repositories
         {
             try
             {
-                using (TransactionScope scope = new TransactionScope())
-                {
-                    RemoveAmountFromPayer(transfer);
-                    AddAmountToReceiver(transfer);
+                using TransactionScope scope = new TransactionScope();
+                RemoveAmountFromPayer(transfer);
+                AddAmountToReceiver(transfer);
 
-                    _context.SaveChanges();
+                _context.SaveChanges();
 
-                    scope.Complete();
-                }
+                scope.Complete();
             }            
             catch (TransactionAbortedException ex)
             {
@@ -98,54 +98,8 @@ namespace SevColApp.Repositories
         {
             var account = await _context.BankAccounts.Where(x => x.AccountNumber == accountNumber).FirstOrDefaultAsync();
 
-            var passwordHash = GetPasswordHash(password);
-
-            return account.PasswordHash.SequenceEqual(passwordHash);
-        }
-
-        private byte[] GetPasswordHash(string password)
-        {
-            if (string.IsNullOrEmpty(password)) return new byte[] { };
-
-            using (HashAlgorithm algorithm = SHA512.Create())
-            {
-                return algorithm.ComputeHash(Encoding.UTF8.GetBytes(password));
-            }
-        }
-
-        private int DetermineStartingCredit(bool userHasAccount, string wealthLevel)
-        {
-            if (userHasAccount) return 0;
-
-            switch (wealthLevel)
-            {
-                case "Civilian":
-                    return 1250;
-                case "Wealthy":
-                    return 1750;
-                case "Very wealthy":
-                    return 28654134;
-                default:
-                    return 1000;
-            }
-        }
-
-        private int DetermineExpectedIncome(bool userHasAccount, string wealthLevel)
-        {
-            if (userHasAccount) return 0;
-
-            switch (wealthLevel)
-            {
-                case "Civilian":
-                    return 750;
-                case "Wealthy":
-                    return 1250;
-                case "Very wealthy":
-                    return 1000000;
-                default:
-                    return 500;
-            }
-        }
+            return PasswordHelper.PasswordCheck(password, account.PasswordHash);
+        }        
 
         private string CreateAccountNumber(Bank bank)
         {
@@ -157,24 +111,16 @@ namespace SevColApp.Repositories
             {
                 generatedAccountNumber = CreateAbbreviationLettersForBankColony(bank);
 
-                generatedAccountNumber += GenerateRandomNumber(generator, 1, 99).ToString();
+                generatedAccountNumber += CreditHelper.GenerateRandomNumber(generator, 1, 99).ToString();
 
                 generatedAccountNumber += bank.Abbreviation;
 
-                generatedAccountNumber += GenerateRandomNumber(generator, 1, 999999);
+                generatedAccountNumber += CreditHelper.GenerateRandomNumber(generator, 1, 999999);
             }
             while (_context.BankAccounts.Any(x => x.AccountNumber == generatedAccountNumber));            
 
             return generatedAccountNumber;
-        }
-
-        private int GenerateRandomNumber(Random generator, int min, int max)
-        {
-            System.Threading.Thread.Sleep(2);
-            var randomNumber = generator.Next(min, max);
-            System.Threading.Thread.Sleep(3);
-            return randomNumber;
-        }
+        }        
 
         private Bank GetBankByBankName(string bankName)
         {
@@ -187,34 +133,16 @@ namespace SevColApp.Repositories
         {
             var colony = _context.Colonies.Where(x => x.Id == bank.ColonyId).FirstOrDefault();
 
-            switch (colony.Name)
+            return colony.Name switch
             {
-                case "Earth":
-                    return "EA";
-                case "Luna":
-                    return "LN";
-                case "Jupiter":
-                    return "JU";
-                case "Saturn":
-                    return "ST";
-                case "Eden and Kordoss":
-                    return "EK";
-                case "The Worlds of Light":
-                    return "WL";
-                default:
-                    return "MA";
-            }
-        }
-
-        private List<string> GetAllExistingBankAccountNumbers()
-        {
-            var allExistingBankAccounts = _context.BankAccounts.ToList();
-
-            var allBankAccountNumbers = new List<string>();
-
-            allExistingBankAccounts.ForEach(account => allBankAccountNumbers.Add(account.AccountNumber));
-
-            return allBankAccountNumbers;
+                "Earth" => "EA",
+                "Luna" => "LN",
+                "Jupiter" => "JU",
+                "Saturn" => "ST",
+                "Eden and Kordoss" => "EK",
+                "The Worlds of Light" => "WL",
+                _ => "MA",
+            };
         }
 
         private void RemoveAmountFromPayer(Transfer transfer)

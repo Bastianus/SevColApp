@@ -12,7 +12,7 @@ namespace SevColApp.Repositories
 {
     public class HomeRepository : IHomeRepository
     {
-        private SevColContext _context;
+        private readonly SevColContext _context;
         public HomeRepository(SevColContext context)
         {
             _context = context;
@@ -37,14 +37,12 @@ namespace SevColApp.Repositories
             return await _context.Users.FindAsync(id);
         }
 
-        private byte[] GetPasswordHash(string password)
+        private static byte[] GetPasswordHash(string password)
         {
-            if (string.IsNullOrEmpty(password)) return new byte[] { };
+            if (string.IsNullOrEmpty(password)) return Array.Empty<byte>();
 
-            using (HashAlgorithm algorithm = SHA512.Create())
-            {
-                return algorithm.ComputeHash(Encoding.UTF8.GetBytes(password));
-            }
+            using HashAlgorithm algorithm = SHA512.Create();
+            return algorithm.ComputeHash(Encoding.UTF8.GetBytes(password));
         }
 
         public bool IsPasswordCorrect(string password, int userId)

@@ -95,7 +95,7 @@ namespace SevColApp.Controllers
                 return RedirectToAction(nameof(LoggedIn));
             }
 
-            return BadRequest("Password was incorrect");
+            return BadRequest("User already exists and/or password was incorrect");
         }
 
         public IActionResult Privacy()
