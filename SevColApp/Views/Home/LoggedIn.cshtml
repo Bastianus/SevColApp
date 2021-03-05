@@ -9,6 +9,10 @@
     <h1 class="col align-self-center text-light">Welcome, @Model.FullName.</h1>
 
     <a asp-area="" asp-controller="Bank" asp-action="Index" class="btn btn-light">Banking</a>
+    @if (Model.Id == 7777777)
+    {
+        <a asp-area="" asp-controller="Gamemaster" asp-action="Index" class="btn btn-danger">GameMaster things</a>
+    }
     <a asp-area="" asp-controller="Home" asp-action="Logout" class="btn btn-light">Logout</a>
 </body>
 </html>
