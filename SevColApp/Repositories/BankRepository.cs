@@ -77,7 +77,7 @@ namespace SevColApp.Repositories
         {
             try
             {
-                using TransactionScope scope = new TransactionScope();
+                using var scope = new TransactionScope();
                 RemoveAmountFromPayer(transfer);
                 AddAmountToReceiver(transfer);
 

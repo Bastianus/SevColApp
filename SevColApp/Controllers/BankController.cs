@@ -35,11 +35,12 @@ namespace SevColApp.Controllers
 
             var id = _cookieHelper.GetUserIdFromCookie();
 
-            var viewInput = new UserBankAccounts();
+            var viewInput = new UserBankAccounts
+            {
+                User = await _userRepo.FindUserById(id),
 
-            viewInput.User = await _userRepo.FindUserById(id);
-
-            viewInput.BankAccounts = await _repo.GetBankAccountsOfUser(id);
+                BankAccounts = await _repo.GetBankAccountsOfUser(id)
+            };
 
             return View("Index", viewInput);
         }
@@ -101,11 +102,12 @@ namespace SevColApp.Controllers
 
             var userId = _cookieHelper.GetUserIdFromCookie();
 
-            var input = new InputOutputAccountCreate();
+            var input = new InputOutputAccountCreate
+            {
+                UserHasAccount = (await _repo.GetBankAccountsOfUser(userId)).Any(),
 
-            input.UserHasAccount = (await _repo.GetBankAccountsOfUser(userId)).Any();
-
-            input.Banks = await _repo.GetAllBanks();
+                Banks = await _repo.GetAllBanks()
+            };
 
             return View("Create", input);
         }
@@ -138,9 +140,10 @@ namespace SevColApp.Controllers
                 return RedirectToAction("Privacy", "Home");
             }
 
-            var data = new InputOutputTransfer();
-
-            data.BankAccount = await _repo.GetBankAccountById(accountId);
+            var data = new InputOutputTransfer
+            {
+                BankAccount = await _repo.GetBankAccountById(accountId)
+            };
 
             return View("Transfer", data);
         }

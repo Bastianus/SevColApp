@@ -8,8 +8,8 @@ namespace SevColApp.Controllers
     public class GamemasterController : Controller
     {
         private readonly ILogger<GamemasterController> _logger;
-        private IHomeRepository _userRepo;
-        private IBankRepository _bankRepo;
+        private readonly IHomeRepository _userRepo;
+        private readonly IBankRepository _bankRepo;
 
         public GamemasterController(ILogger<GamemasterController> logger, IHomeRepository homeRepo, IBankRepository bankRepo)
         {

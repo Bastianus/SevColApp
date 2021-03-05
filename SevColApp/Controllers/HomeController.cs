@@ -12,7 +12,7 @@ namespace SevColApp.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private IHomeRepository _repo;
+        private readonly IHomeRepository _repo;
 
         public HomeController(ILogger<HomeController> logger, IHomeRepository repo)
         {
@@ -127,7 +127,7 @@ namespace SevColApp.Controllers
 
         private void MakeACookie(int userId)
         {
-            CookieOptions option = new CookieOptions
+            var option = new CookieOptions
             {
                 Expires = DateTime.Now.AddDays(1)
             };

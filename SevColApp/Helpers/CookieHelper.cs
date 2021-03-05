@@ -5,7 +5,7 @@ namespace SevColApp.Helpers
 {
     public class CookieHelper
     {
-        private IHttpContextAccessor _accessor;
+        private readonly IHttpContextAccessor _accessor;
         public CookieHelper(IHttpContextAccessor accessor)
         {
             _accessor = accessor;
