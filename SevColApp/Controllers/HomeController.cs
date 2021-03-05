@@ -127,9 +127,10 @@ namespace SevColApp.Controllers
 
         private void MakeACookie(int userId)
         {
-            CookieOptions option = new CookieOptions();
-
-            option.Expires = DateTime.Now.AddDays(1);
+            CookieOptions option = new CookieOptions
+            {
+                Expires = DateTime.Now.AddDays(1)
+            };
 
             Response.Cookies.Append("UserId", userId.ToString(), option);
         }

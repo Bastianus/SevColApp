@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
+using SevColApp.Helpers;
 using SevColApp.Models;
 using SevColApp.Repositories;
 using System;
@@ -12,24 +14,26 @@ namespace SevColApp.Controllers
     public class BankController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private IHomeRepository _userRepo;
-        private IBankRepository _repo;
+        private readonly IHomeRepository _userRepo;
+        private readonly IBankRepository _repo;
+        private readonly CookieHelper _cookieHelper;
 
-        public BankController(ILogger<HomeController> logger, IHomeRepository userRepo, IBankRepository repo)
+        public BankController(ILogger<HomeController> logger, IHomeRepository userRepo, IBankRepository repo, CookieHelper cookieHelper)
         {
             _logger = logger;
             _userRepo = userRepo;
             _repo = repo;
+            _cookieHelper = cookieHelper;
         }
 
         public async Task<IActionResult> Index()
         {
-            if (!IsThereACookie())
+            if (!_cookieHelper.IsThereACookie())
             {
                 return RedirectToAction("Login", "Home");
             }
 
-            var id = GetUserIdFromCookie();
+            var id = _cookieHelper.GetUserIdFromCookie();
 
             var viewInput = new UserBankAccounts();
 
@@ -42,7 +46,7 @@ namespace SevColApp.Controllers
 
         public async Task<IActionResult> PasswordFill(int accountId)
         {
-            if (!IsThereACookie())
+            if (!_cookieHelper.IsThereACookie())
             {
                 return RedirectToAction("Login", "Home");
             }
@@ -59,7 +63,7 @@ namespace SevColApp.Controllers
                 RedirectToAction("Privacy", "Home", null);
             }
 
-            if (!IsThereACookie())
+            if (!_cookieHelper.IsThereACookie())
             {
                 return RedirectToAction("Login", "Home");
             }
@@ -80,9 +84,9 @@ namespace SevColApp.Controllers
 
         public IActionResult Details(BankAccountDetails data)
         {
-            if (!IsThereACookie())
+            if (!ModelState.IsValid)
             {
-                return RedirectToAction("Login", "Home");
+                return RedirectToAction("Privacy", "Home");
             }
 
             return View("Details", data);
@@ -90,11 +94,12 @@ namespace SevColApp.Controllers
 
         public async Task<IActionResult> Create()
         {
-            if (!IsThereACookie())
+            if (!_cookieHelper.IsThereACookie())
             {
                 return RedirectToAction("Login", "Home");
             }
-            var userId = GetUserIdFromCookie();
+
+            var userId = _cookieHelper.GetUserIdFromCookie();
 
             var input = new InputOutputAccountCreate();
 
@@ -111,10 +116,15 @@ namespace SevColApp.Controllers
         {
             if (!ModelState.IsValid)
             {
-                RedirectToAction("Privacy", "Home", null);
+                RedirectToAction("Privacy", "Home");
             }
 
-            var userId = GetUserIdFromCookie();
+            if (!_cookieHelper.IsThereACookie())
+            {
+                return RedirectToAction("Login", "Home");
+            }
+
+            var userId = _cookieHelper.GetUserIdFromCookie();
 
             _repo.CreateNewAccount(input, userId);
 
@@ -123,6 +133,11 @@ namespace SevColApp.Controllers
 
         public async Task<IActionResult> Transfer(int accountId)
         {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Privacy", "Home");
+            }
+
             var data = new InputOutputTransfer();
 
             data.BankAccount = await _repo.GetBankAccountById(accountId);
@@ -152,20 +167,10 @@ namespace SevColApp.Controllers
             }
             else
             {
-                RedirectToAction("Privacy", "Home", null);
+                RedirectToAction("Privacy", "Home");
             }
 
             return View("TransferResult", transfer);
-        }
-
-        private bool IsThereACookie()
-        {
-            return Request.Cookies.ContainsKey("UserId");
-        }
-
-        private int GetUserIdFromCookie()
-        {
-            return Int32.Parse(HttpContext.Request.Cookies["UserId"]);
         }
     }
 }

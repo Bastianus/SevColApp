@@ -1,10 +1,13 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using SevColApp.Context;
+using SevColApp.Helpers;
 using SevColApp.Repositories;
 
 namespace SevColApp
@@ -23,6 +26,7 @@ namespace SevColApp
         {
             services.AddScoped<IHomeRepository, HomeRepository>();
             services.AddScoped<IBankRepository, BankRepository>();
+            services.AddSingleton<CookieHelper>();
 
             services.AddDbContext<SevColContext>(options =>
             {
@@ -31,6 +35,7 @@ namespace SevColApp
             });            
 
             services.AddControllersWithViews();
+            services.AddHttpContextAccessor();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
