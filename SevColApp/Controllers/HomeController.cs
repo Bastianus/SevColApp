@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SevColApp.Helpers;
 using SevColApp.Models;
 using SevColApp.Repositories;
 using System;
@@ -13,11 +14,13 @@ namespace SevColApp.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IHomeRepository _repo;
+        private readonly CookieHelper _cookieHelper;
 
-        public HomeController(ILogger<HomeController> logger, IHomeRepository repo)
+        public HomeController(ILogger<HomeController> logger, IHomeRepository repo, CookieHelper cookieHelper)
         {
             _logger = logger;
             _repo = repo;
+            _cookieHelper = cookieHelper;
         }
 
         public IActionResult Create()
@@ -27,7 +30,7 @@ namespace SevColApp.Controllers
 
         public IActionResult Login()
         {
-            if (IsThereACookie())
+            if (_cookieHelper.IsThereACookie())
             {
                 return RedirectToAction("LoggedIn");
             }
@@ -37,22 +40,17 @@ namespace SevColApp.Controllers
 
         public IActionResult LoginUnknown()
         {
-            if (IsThereACookie())
-            {
-                return RedirectToAction("LoggedIn");
-            }
-
             return View();
         }
 
         public async Task<IActionResult> LoggedIn()
         {
-            if (!IsThereACookie())
+            if (!_cookieHelper.IsThereACookie())
             {
                 return RedirectToAction("Login");
             }
 
-            var id = GetUserIdFromCookie();
+            var id = _cookieHelper.GetUserIdFromCookie();
 
             var user = await _repo.FindUserById(id);
 
@@ -61,7 +59,10 @@ namespace SevColApp.Controllers
 
         public IActionResult Logout()
         {
-            if (IsThereACookie()) RemoveCookie();
+            if (_cookieHelper.IsThereACookie()) 
+            {
+                _cookieHelper.RemoveCookie();
+            }           
 
             return View();
         }
@@ -70,10 +71,16 @@ namespace SevColApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Login(User user)
         {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Privacy");
+            }
+
             if (_repo.LoginIsCorrect(user))
             {
                 var userId = _repo.FindUserIdByLoginName(user.LoginName);
-                MakeACookie(userId);
+
+                _cookieHelper.MakeACookie(userId);
 
                 return RedirectToAction(nameof(LoggedIn));
             }
@@ -86,11 +93,16 @@ namespace SevColApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(User user)
         {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Privacy");
+            }
+
             var userId = await _repo.AddUserIfHeDoesNotExits(user);
 
             if(_repo.IsPasswordCorrect(user.Password, userId))
             {
-                MakeACookie(userId);
+                _cookieHelper.MakeACookie(userId);
 
                 return RedirectToAction(nameof(LoggedIn));
             }
@@ -105,16 +117,16 @@ namespace SevColApp.Controllers
 
         public IActionResult DeleteUser()
         {
-            if (!IsThereACookie())
+            if (!_cookieHelper.IsThereACookie())
             {
                 return RedirectToAction("Login");
             }
 
-            var id = GetUserIdFromCookie();
+            var id = _cookieHelper.GetUserIdFromCookie();
 
             _repo.DeleteUserById(id);
 
-            RemoveCookie();
+            _cookieHelper.RemoveCookie();
 
             return RedirectToAction("Login");
         }
@@ -123,31 +135,6 @@ namespace SevColApp.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
-        private void MakeACookie(int userId)
-        {
-            var option = new CookieOptions
-            {
-                Expires = DateTime.Now.AddDays(1)
-            };
-
-            Response.Cookies.Append("UserId", userId.ToString(), option);
-        }
-
-        private bool IsThereACookie()
-        {
-            return Request.Cookies.ContainsKey("UserId");
-        }
-        
-        private int GetUserIdFromCookie()
-        {
-            return Int32.Parse(HttpContext.Request.Cookies["UserId"]);
-        }
-
-        private void RemoveCookie()
-        {
-            Response.Cookies.Delete("UserId");
         }
     }
 }
