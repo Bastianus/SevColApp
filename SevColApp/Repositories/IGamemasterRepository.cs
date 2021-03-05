@@ -4,6 +4,7 @@ namespace SevColApp.Repositories
 {
     public interface IGamemasterRepository
     {
-        User ChangeUserPassword(int userId, string newPassword);
+        UserPasswordChange ChangeUserPassword(UserPasswordChange input);
+        AccountPasswordChange ChangeBankAccountPassword(AccountPasswordChange input);
     }
 }

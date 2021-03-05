@@ -11,14 +11,12 @@ namespace SevColApp.Controllers
     {
         private readonly ILogger<GamemasterController> _logger;
         private readonly IGamemasterRepository _repo;
-        private readonly IHomeRepository _userRepo;
         private readonly CookieHelper _cookieHelper;
 
-        public GamemasterController(ILogger<GamemasterController> logger, IGamemasterRepository repo, IHomeRepository userRepo, CookieHelper cookieHelper)
+        public GamemasterController(ILogger<GamemasterController> logger, IGamemasterRepository repo, CookieHelper cookieHelper)
         {
             _logger = logger;
             _repo = repo;
-            _userRepo = userRepo;
             _cookieHelper = cookieHelper;
         }
 
@@ -51,13 +49,33 @@ namespace SevColApp.Controllers
                 RedirectToAction("Index");
             }
 
-            var userId = _userRepo.FindUserIdByLoginName(input.UserLoginName);
+            var result = _repo.ChangeUserPassword(input);
 
-            _repo.ChangeUserPassword(userId, input.NewPassword);
-
-            return View("UserPasswordChanged", input);
+            return View("UserPasswordChanged", result);
         }
 
-        
+        public IActionResult ChangeBankAccountPassword()
+        {
+            if (!_cookieHelper.IsThereAGameMasterCookie())
+            {
+                return RedirectToAction("Login", "Home");
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ChangeBankAccountPassword(AccountPasswordChange input)
+        {
+            if (!ModelState.IsValid)
+            {
+                RedirectToAction("Index");
+            }
+
+            var result = _repo.ChangeBankAccountPassword(input);
+
+            return View("BankAccountPasswordChanged", result);
+        }
     }
 }

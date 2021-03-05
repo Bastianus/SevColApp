@@ -2,10 +2,12 @@
 
 namespace SevColApp.Models
 {
-    public class UserPasswordChange
+    public class AccountPasswordChange
     {
         [Required]
-        public string UserLoginName { get; set; }
+        public string UserName { get; set; }
+        [Required]
+        public string BankAccountName { get; set; }
         [Required]
         public string NewPassword { get; set; }
         public string Error { get; set; }
