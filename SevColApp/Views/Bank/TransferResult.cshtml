@@ -6,16 +6,19 @@
 
 <html>
 <body class="bankingpage">
-    @if (string.IsNullOrEmpty(Model.Error))
+    @if (Model.Errors.Count == 0)
     {
         <h5 class="bankingtext">A transfer of @Model.Amount Credits has been completed from @Model.PayingAccountNumber to @Model.ReceivingAccountNumber.</h5>
     }
-    @if (!string.IsNullOrEmpty(Model.Error))
+    @if (Model.Errors.Count > 0)
     {
-        <h3 class="text-warning">Transfer was cancelled.</h3>
-        <h5 class="text-warning">@Model.Error</h5>
+        <h3 class="text-warning">Transfer was cancelled due to errors:</h3>
+        @foreach (var error in Model.Errors)
+        {
+            <h5 class="text-warning">@error</h5>
+        }
     }
-    
+
     <a asp-area="" asp-controller="Bank" asp-action="Index" class="btn btn-light">Back to banking</a>
 </body>
 </html>

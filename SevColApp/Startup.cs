@@ -27,7 +27,7 @@ namespace SevColApp
             services.AddScoped<IHomeRepository, HomeRepository>();
             services.AddScoped<IBankRepository, BankRepository>();
             services.AddScoped<IGamemasterRepository, GamemasterRepository>();
-            services.AddSingleton<CookieHelper>();
+            services.AddScoped<CookieHelper>();
 
             services.AddDbContext<SevColContext>(options =>
             {

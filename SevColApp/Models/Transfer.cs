@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SevColApp.Models
 {
@@ -9,6 +11,7 @@ namespace SevColApp.Models
         public string ReceivingAccountNumber { get; set; }
         public int Amount { get; set; }
         public DateTime Time { get; set; }
-        public string Error { get; set; }
+        [NotMapped]
+        public List<string> Errors { get; set; }
     }
 }

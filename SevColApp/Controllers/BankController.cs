@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 using SevColApp.Helpers;
 using SevColApp.Models;
 using SevColApp.Repositories;
-using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SevColApp.Controllers
 {
@@ -26,7 +24,7 @@ namespace SevColApp.Controllers
             _cookieHelper = cookieHelper;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             if (!_cookieHelper.IsThereACookie())
             {
@@ -37,27 +35,27 @@ namespace SevColApp.Controllers
 
             var viewInput = new UserBankAccounts
             {
-                User = await _userRepo.FindUserById(id),
+                User = _userRepo.FindUserById(id),
 
-                BankAccounts = await _repo.GetBankAccountsOfUser(id)
+                BankAccounts = _repo.GetBankAccountsOfUser(id)
             };
 
             return View("Index", viewInput);
         }
 
-        public async Task<IActionResult> PasswordFill(int accountId)
+        public IActionResult PasswordFill(int accountId)
         {
             if (!_cookieHelper.IsThereACookie())
             {
                 return RedirectToAction("Login", "Home");
             }
 
-            var account = await _repo.GetBankAccountById(accountId);
+            var account = _repo.GetBankAccountById(accountId);
 
             return View("PasswordFill", account);
         }
 
-        public async Task<IActionResult> PasswordCheck(BankAccount passwordData)
+        public IActionResult PasswordCheck(BankAccount passwordData)
         {
             if (!ModelState.IsValid)
             {
@@ -69,11 +67,11 @@ namespace SevColApp.Controllers
                 return RedirectToAction("Login", "Home");
             }
 
-            var account = await _repo.GetBankAccountById(passwordData.Id);
+            var account = _repo.GetBankAccountById(passwordData.Id);
 
             var data = new BankAccountDetails() { Id = account.Id, AccountName = account.AccountName, AccountNumber = account.AccountNumber, Credit = account.Credit };
 
-            var passwordIsCorrect = await _repo.IsAccountPasswordCorrect(account.AccountNumber, passwordData.Password);
+            var passwordIsCorrect = _repo.IsAccountPasswordCorrect(account.AccountNumber, passwordData.Password);
 
             if (passwordIsCorrect)
             {
@@ -93,7 +91,19 @@ namespace SevColApp.Controllers
             return View("Details", data);
         }
 
-        public async Task<IActionResult> Create()
+        public IActionResult DetailsViaName(string accountName)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Privacy", "Home");
+            }
+
+            var data = _repo.GetBankAccountDetailsByAccountName(accountName);
+
+            return View("Details", data);
+        }
+
+        public IActionResult Create()
         {
             if (!_cookieHelper.IsThereACookie())
             {
@@ -104,9 +114,9 @@ namespace SevColApp.Controllers
 
             var input = new InputOutputAccountCreate
             {
-                UserHasAccount = (await _repo.GetBankAccountsOfUser(userId)).Any(),
+                UserHasAccount = (_repo.GetBankAccountsOfUser(userId)).Any(),
 
-                Banks = await _repo.GetAllBanks()
+                Banks = _repo.GetAllBanks()
             };
 
             return View("Create", input);
@@ -114,26 +124,30 @@ namespace SevColApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(InputOutputAccountCreate input)
+        public IActionResult Create(InputOutputAccountCreate input) 
         {
-            if (!ModelState.IsValid)
-            {
-                RedirectToAction("Privacy", "Home");
-            }
+            input.Errors = new List<string>();
+
+            var possibleBankNames = _repo.GetAllBankNames();
+
+            input = BankValidator.ValidateAccountInput(input, possibleBankNames);        
 
             if (!_cookieHelper.IsThereACookie())
             {
                 return RedirectToAction("Login", "Home");
             }
 
-            var userId = _cookieHelper.GetUserIdFromCookie();
+            if(input.Errors.Count == 0)
+            {
+                var userId = _cookieHelper.GetUserIdFromCookie();
 
-            _repo.CreateNewAccount(input, userId);
+                _repo.CreateNewAccount(input, userId);
+            }            
 
-            return RedirectToAction("Index");
+            return View("AccountCreated",input);
         }
 
-        public async Task<IActionResult> Transfer(int accountId)
+        public IActionResult Transfer(int accountId)
         {
             if (!ModelState.IsValid)
             {
@@ -142,7 +156,7 @@ namespace SevColApp.Controllers
 
             var data = new InputOutputTransfer
             {
-                BankAccount = await _repo.GetBankAccountById(accountId)
+                BankAccount = _repo.GetBankAccountById(accountId)
             };
 
             return View("Transfer", data);
@@ -150,13 +164,19 @@ namespace SevColApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Transfer(InputOutputTransfer input)
+        public IActionResult Transfer(InputOutputTransfer input)
         {
             var transfer = input.Transfer;
 
-            if (ModelState.IsValid)
+            transfer.Errors = new List<string>();
+
+            var possibleAccounts = _repo.GetAllBankAccountNumbers();
+
+            transfer = BankValidator.ValidateTransfer(input.Transfer, possibleAccounts);
+
+            if (transfer.Errors.Count == 0)
             {
-                var passwordIsCorrect = await _repo.IsAccountPasswordCorrect(input.Transfer.PayingAccountNumber, input.Password);
+                var passwordIsCorrect = _repo.IsAccountPasswordCorrect(input.Transfer.PayingAccountNumber, input.Password);
 
                 if (passwordIsCorrect)
                 {
@@ -164,13 +184,9 @@ namespace SevColApp.Controllers
                 }
                 else
                 {
-                    transfer.Error = "The account password was incorrect";
+                    transfer.Errors.Add("The account password was incorrect");
                 }
                 
-            }
-            else
-            {
-                RedirectToAction("Privacy", "Home");
             }
 
             return View("TransferResult", transfer);

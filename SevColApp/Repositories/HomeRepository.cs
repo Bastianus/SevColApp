@@ -1,12 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SevColApp.Context;
+﻿using SevColApp.Context;
 using SevColApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SevColApp.Repositories
 {
@@ -18,7 +16,7 @@ namespace SevColApp.Repositories
             _context = context;
         }
 
-        public async Task<int> AddUserIfHeDoesNotExits(User user)
+        public int AddUserIfHeDoesNotExits(User user)
         {
             if (!_context.Users.Any(x => x.LoginName == user.LoginName))
             {
@@ -26,15 +24,15 @@ namespace SevColApp.Repositories
 
                 _context.Users.Add(user);
 
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
 
             return _context.Users.Single(x => x.LoginName == user.LoginName).Id;
         }
 
-        public async Task<User> FindUserById(int id)
+        public User FindUserById(int id)
         {
-            return await _context.Users.FindAsync(id);
+            return _context.Users.Find(id);
         }
 
         private static byte[] GetPasswordHash(string password)
@@ -71,9 +69,9 @@ namespace SevColApp.Repositories
             return userId;
         }
 
-        public async Task<List<User>> GetAllOtherUsers(int id)
+        public List<User> GetAllOtherUsers(int id)
         {
-            var allUsers = await _context.Users.ToListAsync();
+            var allUsers = _context.Users.ToList();
             return allUsers.Where(x => x.Id != id).ToList();
         }
 

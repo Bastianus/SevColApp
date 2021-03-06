@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using SevColApp.Repositories;
 using System;
 
 namespace SevColApp.Helpers
@@ -6,9 +7,11 @@ namespace SevColApp.Helpers
     public class CookieHelper
     {
         private readonly IHttpContextAccessor _context;
-        public CookieHelper(IHttpContextAccessor accessor)
+        private readonly string _gameMasterId;
+        public CookieHelper(IHttpContextAccessor accessor, IHomeRepository userRepo)
         {
             _context = accessor;
+            _gameMasterId = userRepo.FindUserIdByLoginName("GameMaster").ToString();
         }
         public bool IsThereACookie()
         {
@@ -38,7 +41,7 @@ namespace SevColApp.Helpers
         {
             if (_context.HttpContext.Request.Cookies.ContainsKey("UserId"))
             {
-                return _context.HttpContext.Request.Cookies["UserId"] == "7777777";
+                return _context.HttpContext.Request.Cookies["UserId"] == _gameMasterId;
             };
 
             return false;

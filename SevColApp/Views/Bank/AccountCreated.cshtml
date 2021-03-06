@@ -1,0 +1,26 @@
+﻿@model SevColApp.Models.InputOutputAccountCreate
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+<html>
+
+<body class="bankingpage">
+    @if (Model.Errors.Count > 0)
+    {
+        <h3 class="bankingtext">The following errors occured, no account was created:</h3>
+        @foreach (var error in Model.Errors)
+        {
+            <h4 class="text-warning">@error</h4>
+        }
+        <a asp-area="" asp-controller="Bank" asp-action="Create" class="btn btn-light">Back to create a new bank account</a>
+        <a asp-area="" asp-controller="Bank" asp-action="Index" class="btn btn-light">Back to my bank accounts</a>
+    }
+    @if (Model.Errors.Count == 0)
+    {
+        <h3 class="bankingtext">Account @Model.AccountName succesfully created.</h3>
+        <a asp-area="" asp-controller="Bank" asp-action="DetailsViaName" asp-route-accountName=@Model.AccountName class="btn btn-light">View my new account</a>
+        <a asp-area="" asp-controller="Bank" asp-action="Index" class="btn btn-light">Back to my bank accounts</a>
+    }
+</body>
+</html>

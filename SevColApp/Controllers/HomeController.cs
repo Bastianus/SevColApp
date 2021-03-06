@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using SevColApp.Helpers;
 using SevColApp.Models;
 using SevColApp.Repositories;
-using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -43,7 +42,7 @@ namespace SevColApp.Controllers
             return View();
         }
 
-        public async Task<IActionResult> LoggedIn()
+        public IActionResult LoggedIn()
         {
             if (!_cookieHelper.IsThereACookie())
             {
@@ -52,7 +51,9 @@ namespace SevColApp.Controllers
 
             var id = _cookieHelper.GetUserIdFromCookie();
 
-            var user = await _repo.FindUserById(id);
+            var user = _repo.FindUserById(id);
+
+            user.IsGameMaster = _cookieHelper.IsThereAGameMasterCookie();
 
             return View("LoggedIn", user);
         }
@@ -91,14 +92,9 @@ namespace SevColApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(User user)
+        public IActionResult Create(User user)
         {
-            if (!ModelState.IsValid)
-            {
-                return RedirectToAction("Privacy");
-            }
-
-            var userId = await _repo.AddUserIfHeDoesNotExits(user);
+            var userId = _repo.AddUserIfHeDoesNotExits(user);
 
             if(_repo.IsPasswordCorrect(user.Password, userId))
             {

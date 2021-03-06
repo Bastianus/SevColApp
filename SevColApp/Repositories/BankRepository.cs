@@ -1,13 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SevColApp.Context;
+﻿using SevColApp.Context;
 using SevColApp.Helpers;
 using SevColApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using System.Transactions;
 
 namespace SevColApp.Repositories
@@ -19,13 +15,13 @@ namespace SevColApp.Repositories
         {
             _context = context;
         }
-        public async Task<List<BankAccount>> GetBankAccountsOfUser(int userId)
+        public List<BankAccount> GetBankAccountsOfUser(int userId)
         {
-            var accounts = await _context.BankAccounts.Where(x => x.userId == userId).ToListAsync();
+            var accounts = _context.BankAccounts.Where(x => x.userId == userId).ToList();
 
             foreach (var account in accounts)
             {
-                var bank = await _context.Banks.Where(bank => bank.Id == account.BankId).FirstOrDefaultAsync();
+                var bank = _context.Banks.Where(bank => bank.Id == account.BankId).FirstOrDefault();
 
                 account.Bank = bank;
             }
@@ -33,16 +29,39 @@ namespace SevColApp.Repositories
             return accounts;
         }
 
-        public async Task<BankAccount> GetBankAccountById(int id)
+        public BankAccount GetBankAccountById(int id)
         {
-            return await _context.BankAccounts.FindAsync(id);
+            return _context.BankAccounts.Find(id);
         }
 
-        public async Task<List<Bank>> GetAllBanks()
+        public BankAccountDetails GetBankAccountDetailsByAccountName(string accountName)
         {
-            var allBanks = await _context.Banks.ToListAsync();
+            var data = _context.BankAccounts.Where(x => x.AccountName == accountName).FirstOrDefault();
+
+            return new BankAccountDetails
+            {
+                Id = data.Id,
+                AccountName = data.AccountName,
+                AccountNumber = data.AccountNumber,
+                Credit = data.Credit
+            };
+        }
+
+        public List<Bank> GetAllBanks()
+        {
+            var allBanks = _context.Banks.ToList();
 
             return allBanks.OrderBy(x => x.Name).ToList();
+        }
+
+        public List<string> GetAllBankNames()
+        {
+            return _context.Banks.Select(x => x.Name).ToList();
+        }
+
+        public List<string> GetAllBankAccountNumbers()
+        {
+            return _context.BankAccounts.Select(x => x.AccountNumber).ToList();
         }
 
         public void CreateNewAccount(InputOutputAccountCreate input, int userId)
@@ -75,6 +94,7 @@ namespace SevColApp.Repositories
 
         public Transfer ExecuteTransfer(Transfer transfer)
         {
+
             try
             {
                 using var scope = new TransactionScope();
@@ -84,22 +104,23 @@ namespace SevColApp.Repositories
                 _context.SaveChanges();
 
                 scope.Complete();
-            }            
+            }
             catch (TransactionAbortedException ex)
             {
-                transfer.Error = ex.Message;
+                transfer.Errors.Add(ex.Message);
             }
+
 
             transfer.Time = DateTime.Now;
             return transfer;
         }
 
-        public async Task<bool> IsAccountPasswordCorrect(string accountNumber, string password)
+        public bool IsAccountPasswordCorrect(string accountNumber, string password)
         {
-            var account = await _context.BankAccounts.Where(x => x.AccountNumber == accountNumber).FirstOrDefaultAsync();
+            var account = _context.BankAccounts.Where(x => x.AccountNumber == accountNumber).FirstOrDefault();
 
             return PasswordHelper.PasswordCheck(password, account.PasswordHash);
-        }        
+        }
 
         private string CreateAccountNumber(Bank bank)
         {
@@ -117,10 +138,10 @@ namespace SevColApp.Repositories
 
                 generatedAccountNumber += CreditHelper.GenerateRandomNumber(generator, 1, 999999);
             }
-            while (_context.BankAccounts.Any(x => x.AccountNumber == generatedAccountNumber));            
+            while (_context.BankAccounts.Any(x => x.AccountNumber == generatedAccountNumber));
 
             return generatedAccountNumber;
-        }        
+        }
 
         private Bank GetBankByBankName(string bankName)
         {

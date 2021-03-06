@@ -1,4 +1,6 @@
-﻿namespace SevColApp.Models
+﻿using System.Collections.Generic;
+
+namespace SevColApp.Models
 {
     public class InputOutputTransfer
     {
