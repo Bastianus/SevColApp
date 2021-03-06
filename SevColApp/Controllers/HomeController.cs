@@ -5,7 +5,6 @@ using SevColApp.Helpers;
 using SevColApp.Models;
 using SevColApp.Repositories;
 using System.Diagnostics;
-using System.Threading.Tasks;
 
 namespace SevColApp.Controllers
 {

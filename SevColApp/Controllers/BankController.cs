@@ -40,7 +40,7 @@ namespace SevColApp.Controllers
                 BankAccounts = _repo.GetBankAccountsOfUser(id)
             };
 
-            return View("Index", viewInput);
+            return View(viewInput);
         }
 
         public IActionResult PasswordFill(int accountId)
@@ -52,7 +52,7 @@ namespace SevColApp.Controllers
 
             var account = _repo.GetBankAccountById(accountId);
 
-            return View("PasswordFill", account);
+            return View(account);
         }
 
         public IActionResult PasswordCheck(BankAccount passwordData)
@@ -78,7 +78,12 @@ namespace SevColApp.Controllers
                 return RedirectToAction("Details", data);
             }
 
-            return View();
+            var answer = new InputAccountPasswordWrong
+            {
+                AccountId = passwordData.Id
+            };
+
+            return View(answer);
         }
 
         public IActionResult Details(BankAccountDetails data)
