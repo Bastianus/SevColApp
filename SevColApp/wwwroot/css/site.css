@@ -89,6 +89,14 @@ body {
     color: #f8f9fa;
 }
 
+.form-text{
+    width: 25% !important;
+}
+
+.form-input{
+    width: 350px !important;
+}
+
 .footer {
   position: absolute;
   bottom: 0;

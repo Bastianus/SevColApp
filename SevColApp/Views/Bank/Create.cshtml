@@ -8,17 +8,25 @@
 <body  class="bankingpage">
 
     <form asp-action="Create">
+
         <table class="table table-borderless">
             <tr>
-                <th class="text-right bankingtext"> Account name: </th>
+                <th class="bankingtext text-right"> Desired account name: </th>
                 <td>
-                    <input asp-for="AccountName" class="form-control col-6" />
+                    <input asp-for="AccountName" class="form-control form-input float-left" />
                     <span asp-validation-for="AccountName" class="text-danger"></span>
                 </td>
             </tr>
             <tr>
-                <th class="text-right  bankingtext">Bank:</th>
-                <td class="input-group">
+                <th class="text-right bankingtext">Password for your new account:</th>
+                <td>
+                    <input type="password" asp-for="Password" class="form-control float-left form-input" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </td>
+            </tr>
+            <tr>
+                <th class="bankingtext text-right">Bank:</th>
+                <td class="input-group float-left form-input">
                     <select asp-for="BankName" class="custom-select" id="inputGroupSelect04">
                         <option selected>Choose your desired bank</option>
                         @foreach (var bank in @Model.Banks)
@@ -28,34 +36,27 @@
                     </select>
                 </td>
             </tr>
-            <tr>
-                <th class="text-right bankingtext">Password for your new account:</th>
-                <td>
-                    <input type="password" asp-for="Password" class="form-control col-6" />
-                    <span asp-validation-for="Password" class="text-danger"></span>
-                </td>
-            </tr>
             @if (!@Model.UserHasAccount)
             {
-            <tr>
-                <th class="text-right bankingtext"> Wealth level:</th>
-                <td class="input-group">
-                    <select asp-for="WealthLevel" class="custom-select" id="inputGroupSelect04">
-                        <option selected>Choose your wealth level</option>
-                        <option>Normal</option>
-                        <option>Civilian</option>
-                        <option>Wealthy</option>
-                        <option>Very wealthy</option>
-                    </select>
-                </td>
-            </tr>
+                <tr>
+                    <th class="text-right bankingtext"> Wealth level:</th>
+                    <td class="input-group float-left form-input">
+                        <select asp-for="WealthLevel" class="custom-select" id="inputGroupSelect04">
+                            <option selected>Choose your wealth level</option>
+                            <option>Normal</option>
+                            <option>Civilian</option>
+                            <option>Wealthy</option>
+                            <option>Very wealthy</option>
+                        </select>
+                    </td>
+                </tr>
             }
             <tr class="form-group">
                 <th></th>
                 <td>
                     <input type="submit" value="Create" class="btn btn-light" />
                 </td>
-            </tr>
+            </tr>-->
 
         </table>
     </form>
