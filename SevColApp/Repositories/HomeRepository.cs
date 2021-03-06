@@ -32,7 +32,10 @@ namespace SevColApp.Repositories
 
         public User FindUserById(int id)
         {
-            return _context.Users.Find(id);
+            var user =  _context.Users.Find(id);
+            user.Errors = new List<string>();
+
+            return user;
         }
 
         private static byte[] GetPasswordHash(string password)

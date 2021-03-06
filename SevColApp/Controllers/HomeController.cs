@@ -93,16 +93,23 @@ namespace SevColApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(User user)
         {
-            var userId = _repo.AddUserIfHeDoesNotExits(user);
+            user = UserValidator.ValidateUser(user);
 
-            if(_repo.IsPasswordCorrect(user.Password, userId))
+            if(user.Errors.Count == 0)
             {
-                _cookieHelper.MakeACookie(userId);
+                var userId = _repo.AddUserIfHeDoesNotExits(user);
 
-                return RedirectToAction(nameof(LoggedIn));
+                if (_repo.IsPasswordCorrect(user.Password, userId))
+                {
+                    _cookieHelper.MakeACookie(userId);
+                }
+                else
+                {
+                    user.Errors.Add("The password was incorrect.");
+                }
             }
 
-            return BadRequest("User already exists and/or password was incorrect");
+            return View("LoggedIn", user);
         }
 
         public IActionResult Privacy()

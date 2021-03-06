@@ -7,6 +7,8 @@ namespace SevColApp.Helpers
     {
         public static InputOutputAccountCreate ValidateAccountInput(InputOutputAccountCreate input, List<string> possibleBankNames)
         {
+            input.Errors = new List<string>();
+
             if (string.IsNullOrEmpty(input.AccountName)) input.Errors.Add("Account name was invalid.");
             else if (input.AccountName.Length > 50) input.Errors.Add("Account name was too long, max length is 50.");
 
@@ -22,6 +24,8 @@ namespace SevColApp.Helpers
 
         public static Transfer ValidateTransfer(Transfer input, List<string> possibleAccounts)
         {
+            input.Errors = new List<string>();
+
             var payingAccount = input.PayingAccountNumber;
             if (payingAccount == null) input.Errors.Add("Paying account number was not set.");
             else if (!possibleAccounts.Contains(payingAccount))

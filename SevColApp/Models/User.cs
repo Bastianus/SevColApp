@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SevColApp.Models
@@ -23,5 +24,7 @@ namespace SevColApp.Models
         public string Password { get; set; }
         [NotMapped]
         public bool IsGameMaster { get; set; }
+        [NotMapped]
+        public List<string> Errors { get; set; }
     }
 }

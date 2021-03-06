@@ -131,8 +131,6 @@ namespace SevColApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(InputOutputAccountCreate input) 
         {
-            input.Errors = new List<string>();
-
             var possibleBankNames = _repo.GetAllBankNames();
 
             input = BankValidator.ValidateAccountInput(input, possibleBankNames);        
@@ -172,8 +170,6 @@ namespace SevColApp.Controllers
         public IActionResult Transfer(InputOutputTransfer input)
         {
             var transfer = input.Transfer;
-
-            transfer.Errors = new List<string>();
 
             var possibleAccounts = _repo.GetAllBankAccountNumbers();
 
