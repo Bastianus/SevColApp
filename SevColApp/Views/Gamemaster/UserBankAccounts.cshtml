@@ -1,0 +1,33 @@
+﻿@model SevColApp.Models.UserAccountsAnswer
+
+@{
+    ViewData["Title"] = "All bank accounts of a user";
+}
+
+<html>
+<body class="gmpage">
+    <h3>These are the bank accounts beloning to "@Model.User.FullName".</h3>
+    <table class="table table-borderless table-responsive">
+        <thead>
+            <tr>
+                <th scope="col">Account id</th>
+                <th scope="col">Account name</th>
+                <th scope="col">Account number</th>
+                <th scope="col">Credits</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var account in Model.Accounts)
+            {
+                <tr>
+                    <th scope="row">@account.Id</th>
+                    <td>@account.AccountName</td>
+                    <td>@account.AccountNumber</td>
+                    <td>@account.Credit.ToString("N0")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</body>
+</html>

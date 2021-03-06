@@ -1,0 +1,30 @@
+﻿@model SevColApp.Models.AllUsers
+
+@{
+    ViewData["Title"] = "Gamemaster's all users page";
+}
+
+<html>
+<body class="gmpage">
+    <table class="table table-borderless table-responsive">
+        <thead>
+            <tr>
+                <th scope="col">User id</th>
+                <th scope="col">Login name</th>
+                <th scope="col">Full name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var user in Model.Users)
+            {
+                <tr>
+                    <th scope="row">@user.Id</th>
+                    <td>@user.LoginName</td>
+                    <td>@user.FullName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    
+</body>
+</html>

@@ -4,7 +4,6 @@ using SevColApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SevColApp.Repositories
 {
@@ -14,6 +13,34 @@ namespace SevColApp.Repositories
         public GamemasterRepository(SevColContext context)
         {
             _context = context;
+        }
+
+        public List<User> GetAllUsers()
+        {         
+            return _context.Users.Where(x => x.Id != 7777777).ToList();
+        }
+
+        public UserAccountsAnswer GetAllAccountsOfUser(string userName)
+        {
+            var answer = new UserAccountsAnswer();
+
+            answer.User = GetUserByUsername(userName);
+
+            if(answer.User == null)
+            {
+                answer.Error = $"No user with login name \"{userName}\" was found.";
+
+                return answer;
+            }
+
+            answer.Accounts = _context.BankAccounts.Where(x => x.userId == answer.User.Id).ToList();
+
+            if (answer.Accounts.Count() == 0)
+            {
+                answer.Error = $"The user with login name \"{userName}\" has no known bank accounts (yet?).";
+            }
+
+            return answer;
         }
 
         public UserPasswordChange ChangeUserPassword(UserPasswordChange input)

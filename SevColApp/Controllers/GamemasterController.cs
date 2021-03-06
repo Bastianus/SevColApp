@@ -30,6 +30,37 @@ namespace SevColApp.Controllers
             return View();
         }
 
+        public IActionResult Users()
+        {
+            if (!_cookieHelper.IsThereAGameMasterCookie())
+            {
+                return RedirectToAction("Login", "Home");
+            }
+
+            var answer = new AllUsers { Users = _repo.GetAllUsers() };
+
+            return View(answer);
+        }
+
+        public IActionResult EnterUserName()
+        {
+            if (!_cookieHelper.IsThereAGameMasterCookie())
+            {
+                return RedirectToAction("Login", "Home");
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult EnterUserName(User user)
+        {
+            var answer = _repo.GetAllAccountsOfUser(user.LoginName);
+
+            return View("UserBankAccounts", answer);
+        }
+
         public IActionResult ChangeUserPassword()
         {
             if (!_cookieHelper.IsThereAGameMasterCookie())
