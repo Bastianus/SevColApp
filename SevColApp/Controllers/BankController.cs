@@ -169,11 +169,9 @@ namespace SevColApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Transfer(InputOutputTransfer input)
         {
-            var transfer = input.Transfer;
-
             var possibleAccounts = _repo.GetAllBankAccountNumbers();
 
-            transfer = BankValidator.ValidateTransfer(input.Transfer, possibleAccounts);
+            var transfer = BankValidator.ValidateTransfer(input.Transfer, possibleAccounts);
 
             if (transfer.Errors.Count == 0)
             {
