@@ -9,5 +9,7 @@ namespace SevColApp.Repositories
         UserAccountsAnswer GetAllAccountsOfUser(string userName);
         UserPasswordChange ChangeUserPassword(UserPasswordChange input);
         AccountPasswordChange ChangeBankAccountPassword(AccountPasswordChange input);
+        AllUsers PayAllowanceForUser(string userLoginName);
+        AllUsers ResetAllowances();
     }
 }

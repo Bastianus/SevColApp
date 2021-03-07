@@ -46,5 +46,10 @@ namespace SevColApp.Helpers
 
             return false;
         }
+
+        public int GetGameMasterId()
+        {
+            return Int32.Parse(_gameMasterId);
+        }
     }
 }

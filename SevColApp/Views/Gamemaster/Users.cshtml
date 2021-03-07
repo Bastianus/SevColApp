@@ -12,21 +12,27 @@
                 <th scope="col">User id</th>
                 <th scope="col">Login name</th>
                 <th scope="col">Full name</th>
+                <th scope="col">Allowance status</th>
+                <th scope="col"></th>
             </tr>
         </thead>
         <tbody>
-            @foreach(var user in Model.Users)
+            @foreach (var user in Model.Users)
             {
                 <tr>
                     <th scope="row">@user.Id</th>
                     <td>@user.LoginName</td>
                     <td>@user.FullName</td>
+                    <td class="text-success">@user.AllowanceStatus</td>
+                    <td>
+                        <a asp-area="" asp-controller="Gamemaster" asp-action="PayUser" asp-route-userLoginName=@user.LoginName class="btn btn-info">Pay allowance</a>
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
+    <a asp-area="" asp-controller="Gamemaster" asp-action="AllowanceReset" class="btn btn-info">Reset allowance statusses</a>
+    <a asp-area="" asp-controller="Gamemaster" asp-action="Index" class="btn btn-outline-dark">Back to game master page</a>
 
-    <a asp-area="" asp-controller="Gamemaster" asp-action="Index" class="btn btn-info">Back to game master page</a>
-    
 </body>
 </html>

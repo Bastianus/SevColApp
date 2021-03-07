@@ -26,5 +26,6 @@ namespace SevColApp.Models
         public bool IsGameMaster { get; set; }
         [NotMapped]
         public List<string> Errors { get; set; }
+        public string AllowanceStatus { get; set; }
     }
 }

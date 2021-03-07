@@ -10,14 +10,16 @@ namespace SevColApp.Repositories
     public class GamemasterRepository : IGamemasterRepository
     {
         private readonly SevColContext _context;
-        public GamemasterRepository(SevColContext context)
+        private readonly CookieHelper _cookieHelper;
+        public GamemasterRepository(SevColContext context, CookieHelper cookieHelper)
         {
             _context = context;
+            _cookieHelper = cookieHelper;
         }
 
         public List<User> GetAllUsers()
-        {         
-            return _context.Users.Where(x => x.Id != 7777777).ToList();
+        {
+            return  _context.Users.Where(x => x.Id != _cookieHelper.GetGameMasterId()).ToList();
         }
 
         public UserAccountsAnswer GetAllAccountsOfUser(string userName)
@@ -86,6 +88,45 @@ namespace SevColApp.Repositories
             _context.SaveChanges();
 
             return input;
+        }
+
+        public AllUsers PayAllowanceForUser(string userLoginName)
+        {
+            var allUsers = GetAllUsers();
+
+            var rightUser = allUsers.Where(x => x.LoginName == userLoginName).FirstOrDefault();
+
+            var bankAccountsOfUser = _context.BankAccounts.Where(account => account.userId == rightUser.Id).ToList();
+
+            if (rightUser.AllowanceStatus == "Paid" || rightUser.AllowanceStatus == "Already paid")
+            {
+                rightUser.AllowanceStatus = "Already paid";
+            }
+            else if(bankAccountsOfUser.Count > 0)
+            {
+                bankAccountsOfUser.ForEach(account => account.Credit += account.ExpectedIncome);                
+
+                rightUser.AllowanceStatus = "Paid";
+            }
+            else
+            {
+                rightUser.AllowanceStatus = "No bank account";
+            }
+
+            _context.SaveChanges();
+
+            return new AllUsers { Users = allUsers };
+        }
+
+        public AllUsers ResetAllowances()
+        {
+            var allUsers = GetAllUsers();
+
+            allUsers.ForEach(user => user.AllowanceStatus = "");
+
+            _context.SaveChanges();
+
+            return new AllUsers { Users = allUsers };
         }
 
         private User GetUserByUsername(string userName)

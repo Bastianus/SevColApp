@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using SevColApp.Helpers;
 using SevColApp.Models;
 using SevColApp.Repositories;
+using System.Collections.Generic;
 
 namespace SevColApp.Controllers
 {
@@ -40,6 +41,20 @@ namespace SevColApp.Controllers
             var answer = new AllUsers { Users = _repo.GetAllUsers() };
 
             return View(answer);
+        }
+
+        public IActionResult PayUser(string userLoginName)
+        {
+            var answer = _repo.PayAllowanceForUser(userLoginName);
+
+            return View("Users", answer);
+        }
+
+        public IActionResult AllowanceReset()
+        {
+            var answer = _repo.ResetAllowances();
+
+            return View("Users", answer);
         }
 
         public IActionResult EnterUserName()
