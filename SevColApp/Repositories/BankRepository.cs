@@ -11,9 +11,14 @@ namespace SevColApp.Repositories
     public class BankRepository : IBankRepository
     {
         private readonly SevColContext _context;
+        private readonly List<string> _forbiddenBanks;
         public BankRepository(SevColContext context)
         {
             _context = context;
+            _forbiddenBanks = new List<string>
+            {
+                "SevCol Bank"
+            };
         }
         public List<BankAccount> GetBankAccountsOfUser(int userId)
         {
@@ -51,12 +56,16 @@ namespace SevColApp.Repositories
         {
             var allBanks = _context.Banks.ToList();
 
+            allBanks = FilterForbiddenBanks(allBanks, _forbiddenBanks);
+
             return allBanks.OrderBy(x => x.Name).ToList();
         }
 
         public List<string> GetAllBankNames()
         {
-            return _context.Banks.Select(x => x.Name).ToList();
+            var allBankNames =  _context.Banks.Select(x => x.Name).ToList();
+
+            return allBankNames;
         }
 
         public List<string> GetAllBankAccountNumbers()
@@ -162,6 +171,7 @@ namespace SevColApp.Repositories
                 "Saturn" => "ST",
                 "Eden and Kordoss" => "EK",
                 "The Worlds of Light" => "WL",
+                "SevCol" => "SC",
                 _ => "MA",
             };
         }
@@ -180,6 +190,11 @@ namespace SevColApp.Repositories
             var receivingAccount = _context.BankAccounts.Where(x => x.AccountNumber == transfer.ReceivingAccountNumber).FirstOrDefault() ?? throw new TransactionAbortedException("No such account exists");
 
             receivingAccount.Credit += transfer.Amount;
+        }
+
+        private static List<Bank> FilterForbiddenBanks(List<Bank> banks, List<string> forbiddenBanks)
+        {
+            return banks.Where(bank => !forbiddenBanks.Contains(bank.Name)).ToList();
         }
     }
 }

@@ -25,7 +25,8 @@ namespace SevColApp.Context
                 new Colony(4, "Jupiter"),
                 new Colony(5, "Saturn"),
                 new Colony(6, "Eden and Kordoss"),
-                new Colony(7, "The Worlds of Light")
+                new Colony(7, "The Worlds of Light"),
+                new Colony(8, "SevCol")
                 );
 
             modelBuilder.Entity<Bank>().HasData(
@@ -40,7 +41,8 @@ namespace SevColApp.Context
                 new Bank(9, "Saturnians Abroad Support", "SAS", 5),
                 new Bank(10, "Rock Steady Finance", "RSF", 6),
                 new Bank(11, "Sock Drawer Bank", "SDB", 6),
-                new Bank(12, "The Enlightened Bank", "TEB", 7)
+                new Bank(12, "The Enlightened Bank", "TEB", 7),
+                new Bank(13, "SevCol Bank", "SCB", 8)
                 );
 
             modelBuilder.Entity<User>().HasData(

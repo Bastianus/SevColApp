@@ -19,21 +19,28 @@
                 <tr>
                     <th scope="row" class="bankingtext">To account:</th>
                     <td>
-                        <input asp-for="Transfer.ReceivingAccountNumber" class="form-control col-6" />
+                        <input asp-for="Transfer.ReceivingAccountNumber" class="form-control form-input" />
                         <span asp-validation-for="Transfer.ReceivingAccountNumber" class="text-danger"></span>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row" class="bankingtext">Amount (in credits):</th>
                     <td>
-                        <input asp-for="Transfer.Amount" class="form-control col-6" />
+                        <input asp-for="Transfer.Amount" class="form-control form-input" />
                         <span asp-validation-for="Transfer.Amount" class="text-danger"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row" class="bankingtext">Description:</th>
+                    <td>
+                        <input asp-for="Transfer.Description" class="form-control form-input" />
+                        <span asp-validation-for="Transfer.Description" class="text-danger"></span>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row" class="bankingtext">Password of your account:</th>
                     <td>
-                        <input type="password" asp-for="Password" class="form-control col-6" />
+                        <input type="password" asp-for="Password" class="form-control form-input" />
                         <span asp-validation-for="Password" class="text-danger"></span>
                     </td>
                 </tr>
