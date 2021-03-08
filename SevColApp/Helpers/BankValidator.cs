@@ -40,6 +40,9 @@ namespace SevColApp.Helpers
                 input.Errors.Add($"The receiving account \"{receivingAccount}\" does not exist.");
             }
 
+            if (input.Description == null) input.Errors.Add("A transfer needs a description");
+            else if (input.Description.Length > 100) input.Errors.Add("A transfer description can be no longer than 100 characters.");
+
             if (input.Amount < 0) input.Errors.Add("Only positive numbers can be transferred.");
 
             return input;

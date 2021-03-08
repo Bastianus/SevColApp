@@ -55,7 +55,7 @@ namespace SevColApp.Controllers
             return View(account);
         }
 
-        public IActionResult PasswordCheck(BankAccount passwordData)
+        public IActionResult Details(BankAccount passwordData)
         {
             if (!ModelState.IsValid)
             {
@@ -69,32 +69,34 @@ namespace SevColApp.Controllers
 
             var account = _repo.GetBankAccountById(passwordData.Id);
 
-            var data = new BankAccountDetails() { Id = account.Id, AccountName = account.AccountName, AccountNumber = account.AccountNumber, Credit = account.Credit };
+            var transfers = _repo.GetTransfersByAccountNumber(account.AccountNumber);
+
+            var data = new BankAccountDetails() { Id = account.Id, AccountName = account.AccountName, AccountNumber = account.AccountNumber, Credit = account.Credit , Transfers = transfers};
 
             var passwordIsCorrect = _repo.IsAccountPasswordCorrect(account.AccountNumber, passwordData.Password);
 
-            if (passwordIsCorrect)
+            if (!passwordIsCorrect)
             {
-                return RedirectToAction("Details", data);
-            }
+                var answer = new InputAccountPasswordWrong
+                {
+                    AccountId = passwordData.Id
+                };
 
-            var answer = new InputAccountPasswordWrong
-            {
-                AccountId = passwordData.Id
-            };
+                return View("PasswordCheck", answer);
+            }            
 
-            return View(answer);
+            return View(data);
         }
 
-        public IActionResult Details(BankAccountDetails data)
-        {
-            if (!ModelState.IsValid)
-            {
-                return RedirectToAction("Privacy", "Home");
-            }
+        //public IActionResult Details(BankAccountDetails data)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return RedirectToAction("Privacy", "Home");
+        //    }
 
-            return View("Details", data);
-        }
+        //    return View("Details", data);
+        //}
 
         public IActionResult DetailsViaName(string accountName)
         {

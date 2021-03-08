@@ -39,16 +39,29 @@ namespace SevColApp.Repositories
             return _context.BankAccounts.Find(id);
         }
 
+        public List<Transfer> GetTransfersByAccountNumber(string accountNumber)
+        {
+            var transfers = _context.Transfers.Where(x => x.PayingAccountNumber == accountNumber).ToList();
+            transfers.ForEach(x => x.Amount = -x.Amount);
+
+            transfers.AddRange(_context.Transfers.Where(x => x.ReceivingAccountNumber == accountNumber).ToList());
+
+            return transfers.OrderByDescending(x => x.Time).ToList();
+        }
+
         public BankAccountDetails GetBankAccountDetailsByAccountName(string accountName)
         {
             var data = _context.BankAccounts.Where(x => x.AccountName == accountName).FirstOrDefault();
+
+            var transfers = GetTransfersByAccountNumber(data.AccountNumber);
 
             return new BankAccountDetails
             {
                 Id = data.Id,
                 AccountName = data.AccountName,
                 AccountNumber = data.AccountNumber,
-                Credit = data.Credit
+                Credit = data.Credit,
+                Transfers = transfers
             };
         }
 
@@ -107,8 +120,12 @@ namespace SevColApp.Repositories
             try
             {
                 using var scope = new TransactionScope();
+
                 RemoveAmountFromPayer(transfer);
                 AddAmountToReceiver(transfer);
+
+                transfer.Time = DateTime.Now;
+                _context.Transfers.Add(transfer);
 
                 _context.SaveChanges();
 

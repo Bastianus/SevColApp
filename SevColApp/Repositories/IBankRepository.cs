@@ -8,6 +8,7 @@ namespace SevColApp.Repositories
     {
         List<BankAccount> GetBankAccountsOfUser(int userId);
         BankAccount GetBankAccountById(int id);
+        List<Transfer> GetTransfersByAccountNumber(string accountNumber);
         BankAccountDetails GetBankAccountDetailsByAccountName(string accountName);
         List<Bank> GetAllBanks();
         List<string> GetAllBankNames();

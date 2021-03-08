@@ -5,7 +5,7 @@
 }
 
 <html>
-<body  class="bankingpage">
+<body class="bankingpage">
 
     <table class="table table-borderless w-auto">
 
@@ -25,6 +25,41 @@
         </tbody>
 
     </table>
+
+    @if (Model.Transfers.Count > 0)
+    {
+        <table class="table table-responsive table-borderless">
+
+            <thead>
+                <tr>
+                    <th class="bankingtext">Other account</th>
+                    <th class="bankingtext">Amount transferred</th>
+                    <th class="bankingtext">Description</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var transfer in Model.Transfers)
+                {
+                    <tr>
+                        @if (transfer.Amount >= 0)
+                        {
+                            <th class="bankingtext">@transfer.PayingAccountNumber</th>
+                            <th class="text-success">@transfer.Amount</th>
+                            <th class="bankingtext">@transfer.Description</th>
+                        }
+                        @if (transfer.Amount < 0)
+                        {
+                            <th class="bankingtext">@transfer.ReceivingAccountNumber</th>
+                            <th class="text-danger">@transfer.Amount</th>
+                            <th class="bankingtext">@transfer.Description</th>
+                        }
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    }
 
     <a asp-area="" asp-controller="Bank" asp-action="Transfer" asp-route-accountId="@Model.Id" class="btn btn-light">Make a transfer</a>
 
