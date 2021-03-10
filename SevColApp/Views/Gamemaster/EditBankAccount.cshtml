@@ -1,0 +1,57 @@
+﻿@model SevColApp.Models.InputOutputAccountEdit
+
+@{
+    ViewData["Title"] = "Edit bank account credits";
+}
+
+<html>
+<body class="gmpage">
+    @if (Model.Errors.Count == 0)
+    {
+
+    <form asp-action="ChangeBankAccountPassword">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <table class="table table-borderless table-sm">
+            <tr>
+                <th class="text-right"><label>Amount in credits:</label></th>
+                <td>
+                    <input asp-for="Amount" class="form-control col-6" />
+                    <span asp-validation-for="Amount" class="text-danger"></span>
+                </td>
+            </tr>
+
+            <tr>
+                <th class="text-right"><label>With a transfer from random SevCol account:</label></th>
+                <td>
+                    <input asp-for="FromRandomSevColAccount" class="form-control col-6" />
+                    <span asp-validation-for="FromRandomSevColAccount" class="text-danger"></span>
+                </td>
+            </tr>
+
+            <tr>
+                <th class="text-right"><label>With a transfer from account number:</label></th>
+                <td>
+                    <input asp-for="AccountNumber" class="form-control col-6" />
+                    <span asp-validation-for="AccountNumber" class="text-danger"></span>
+                </td>
+            </tr>
+
+            <tr class="form-group">
+                <th></th>
+                <td>
+                    <input type="submit" class="btn btn-dark" />
+                </td>
+            </tr>
+        </table>
+    </form>
+    }
+
+    @(Model.Errors.Count > 0)
+    {
+        @foreach(var error in Model.Errors)
+            {
+                <h4>@error</h4>
+            }
+    }
+</body>
+</html>

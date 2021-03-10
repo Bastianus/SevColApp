@@ -128,6 +128,10 @@ namespace SevColApp.Repositories
 
             return new AllUsers { Users = allUsers };
         }
+        public BankAccount GetAccountByAccountNumber(string accountNumber)
+        {
+            return _context.BankAccounts.Where(x => x.AccountNumber == accountNumber).FirstOrDefault();
+        }
 
         private User GetUserByUsername(string userName)
         {

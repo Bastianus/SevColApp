@@ -11,5 +11,6 @@ namespace SevColApp.Repositories
         AccountPasswordChange ChangeBankAccountPassword(AccountPasswordChange input);
         AllUsers PayAllowanceForUser(string userLoginName);
         AllUsers ResetAllowances();
+        BankAccount GetAccountByAccountNumber(string accountNumber);
     }
 }

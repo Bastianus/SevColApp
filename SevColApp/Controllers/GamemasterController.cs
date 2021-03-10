@@ -45,6 +45,11 @@ namespace SevColApp.Controllers
 
         public IActionResult PayUser(string userLoginName)
         {
+            if (!_cookieHelper.IsThereAGameMasterCookie())
+            {
+                return RedirectToAction("Login", "Home");
+            }
+
             var answer = _repo.PayAllowanceForUser(userLoginName);
 
             return View("Users", answer);
@@ -52,6 +57,11 @@ namespace SevColApp.Controllers
 
         public IActionResult AllowanceReset()
         {
+            if (!_cookieHelper.IsThereAGameMasterCookie())
+            {
+                return RedirectToAction("Login", "Home");
+            }
+
             var answer = _repo.ResetAllowances();
 
             return View("Users", answer);
@@ -59,6 +69,11 @@ namespace SevColApp.Controllers
 
         public IActionResult EnterUserName()
         {
+            if (!_cookieHelper.IsThereAGameMasterCookie())
+            {
+                return RedirectToAction("Login", "Home");
+            }
+
             if (!_cookieHelper.IsThereAGameMasterCookie())
             {
                 return RedirectToAction("Login", "Home");
@@ -78,6 +93,11 @@ namespace SevColApp.Controllers
 
         public IActionResult ChangeUserPassword()
         {
+            if (!_cookieHelper.IsThereAGameMasterCookie())
+            {
+                return RedirectToAction("Login", "Home");
+            }
+
             if (!_cookieHelper.IsThereAGameMasterCookie())
             {
                 return RedirectToAction("Login", "Home");
@@ -123,5 +143,27 @@ namespace SevColApp.Controllers
 
             return View("BankAccountPasswordChanged", result);
         }
+
+        public IActionResult EditBankAccount(string accountNumber)
+        {
+            if (!_cookieHelper.IsThereAGameMasterCookie())
+            {
+                return RedirectToAction("Login", "Home");
+            }
+
+            var account = _repo.GetAccountByAccountNumber(accountNumber);
+
+            var inputOutput = new InputOutputAccountEdit { Account = account };
+
+            return View( inputOutput );
+        }
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public IActionResult EditBankAccount(InputOutputAccountEdit input)
+        //{
+
+        //    return View();
+        //}
     }
 }

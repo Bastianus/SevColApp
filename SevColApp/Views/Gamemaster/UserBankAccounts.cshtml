@@ -24,6 +24,9 @@
                     <td>@account.AccountName</td>
                     <td>@account.AccountNumber</td>
                     <td>@account.Credit.ToString("N0")</td>
+                    <td>
+                        <a asp-area="" asp-controller="Gamemaster" asp-action="EditBankAccount" asp-route-accountNumber=@account.AccountNumber class="btn btn-outline-dark">Edit credit</a>
+                    </td>
                 </tr>
             }
         </tbody>
