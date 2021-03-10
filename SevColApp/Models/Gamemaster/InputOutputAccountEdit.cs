@@ -9,6 +9,8 @@ namespace SevColApp.Models
         public bool WithTransfer { get; set; }
         public string AccountNumber { get; set; }
         public bool FromRandomSevColAccount { get; set; }
+        public string ToAccountNumber { get; set; }
+        public string Description { get; set; }
         public BankAccount Account { get; set; }
     }
 }

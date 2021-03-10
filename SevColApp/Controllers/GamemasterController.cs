@@ -153,17 +153,18 @@ namespace SevColApp.Controllers
 
             var account = _repo.GetAccountByAccountNumber(accountNumber);
 
-            var inputOutput = new InputOutputAccountEdit { Account = account };
+            var inputOutput = new InputOutputAccountEdit { Account = account, Errors = new List<string>()};
 
             return View( inputOutput );
         }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public IActionResult EditBankAccount(InputOutputAccountEdit input)
-        //{
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult EditBankAccount(InputOutputAccountEdit input)
+        {
+            var answer = _repo.EditBankAccount(input);
 
-        //    return View();
-        //}
+            return View("EditBankAccountResult", answer);
+        }
     }
 }

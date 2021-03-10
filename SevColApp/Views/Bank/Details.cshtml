@@ -45,13 +45,13 @@
                         @if (transfer.Amount >= 0)
                         {
                             <th class="bankingtext">@transfer.PayingAccountNumber</th>
-                            <th class="text-success">@transfer.Amount</th>
+                            <th class="text-success">@transfer.Amount.ToString("N0")</th>
                             <th class="bankingtext">@transfer.Description</th>
                         }
                         @if (transfer.Amount < 0)
                         {
                             <th class="bankingtext">@transfer.ReceivingAccountNumber</th>
-                            <th class="text-danger">@transfer.Amount</th>
+                            <th class="text-danger">@transfer.Amount.ToString("N0")</th>
                             <th class="bankingtext">@transfer.Description</th>
                         }
                     </tr>

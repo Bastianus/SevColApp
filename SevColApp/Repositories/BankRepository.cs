@@ -86,7 +86,7 @@ namespace SevColApp.Repositories
             return _context.BankAccounts.Select(x => x.AccountNumber).ToList();
         }
 
-        public void CreateNewAccount(InputOutputAccountCreate input, int userId)
+        public BankAccount CreateNewAccount(InputOutputAccountCreate input, int userId)
         {
             var bank = GetBankByBankName(input.BankName);
 
@@ -112,6 +112,8 @@ namespace SevColApp.Repositories
             _context.BankAccounts.Add(newAccount);
 
             _context.SaveChanges();
+
+            return newAccount;
         }
 
         public Transfer ExecuteTransfer(Transfer transfer)

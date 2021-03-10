@@ -1,0 +1,25 @@
+﻿@model SevColApp.Models.EditBankAccountResult
+
+@{
+    ViewData["Title"] = "Result from edit bank account credits";
+}
+
+<html>
+<body class="gmpage">
+    @if (Model.Errors.Count == 0)
+    {
+        <h4>Success! @Model.AmountChange.ToString("N0") credits have been transferred to @Model.ToAccount from @Model.FromAccount.</h4>
+    }
+    @if (Model.Errors.Count != 0)
+    {
+        <h4>Errors occurred:</h4>
+        @foreach (var error in Model.Errors)
+        {
+            <h4>@error</h4>
+        }
+    }
+
+    <a asp-area="" asp-controller="Gamemaster" asp-action="Index" class="btn btn-info">Back to game master page</a>
+
+</body>
+</html>

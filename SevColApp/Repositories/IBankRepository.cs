@@ -13,7 +13,7 @@ namespace SevColApp.Repositories
         List<Bank> GetAllBanks();
         List<string> GetAllBankNames();
         List<string> GetAllBankAccountNumbers();
-        void CreateNewAccount(InputOutputAccountCreate input, int userId);
+        BankAccount CreateNewAccount(InputOutputAccountCreate input, int userId);
         Transfer ExecuteTransfer(Transfer transfer);
         bool IsAccountPasswordCorrect(string accountNumber, string password);
     }

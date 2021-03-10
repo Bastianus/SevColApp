@@ -9,14 +9,26 @@
     @if (Model.Errors.Count == 0)
     {
 
-    <form asp-action="ChangeBankAccountPassword">
+    <form asp-action="EditBankAccount">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <table class="table table-borderless table-sm">
             <tr>
-                <th class="text-right"><label>Amount in credits:</label></th>
+                <th class="text-right"><label>Current credits:</label></th>
+                <td>@Model.Account.Credit.ToString("N0")</td>
+            </tr>
+            <tr>
+                <th class="text-right"><label>Amount in credits to add:</label></th>
                 <td>
                     <input asp-for="Amount" class="form-control col-6" />
                     <span asp-validation-for="Amount" class="text-danger"></span>
+                </td>
+            </tr>
+
+            <tr>
+                <th class="text-right"><label>Description (ignored if below 2 are empty):</label></th>
+                <td>
+                    <input asp-for="Description" class="form-control col-6" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
                 </td>
             </tr>
 
@@ -36,6 +48,11 @@
                 </td>
             </tr>
 
+            <tr>
+                <td>
+                    <input asp-for="ToAccountNumber" class="hide" type="hidden" value=@Model.Account.AccountNumber>
+                </td>
+            </tr>
             <tr class="form-group">
                 <th></th>
                 <td>
@@ -46,7 +63,7 @@
     </form>
     }
 
-    @(Model.Errors.Count > 0)
+    @if (Model.Errors.Count > 0)
     {
         @foreach(var error in Model.Errors)
             {
