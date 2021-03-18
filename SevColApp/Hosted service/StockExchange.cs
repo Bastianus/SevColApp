@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using SevColApp.Context;
+using SevColApp.Models;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,6 +26,11 @@ namespace SevColApp.Hosted_service
 
                 await Task.Delay(TimeSpan.FromSeconds(15), token);
             }            
+        }
+
+        private void ExchangeStocksForCompany(Company company)
+        {
+
         }
     }
 }

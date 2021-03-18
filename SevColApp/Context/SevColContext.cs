@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SevColApp.Helpers;
 using SevColApp.Models;
+using System.Linq;
 
 namespace SevColApp.Context
 {
@@ -15,9 +16,20 @@ namespace SevColApp.Context
         public DbSet<Bank> Banks { get; set; }
         public DbSet<BankAccount> BankAccounts { get; set; }
         public DbSet<Transfer> Transfers { get; set; }
+        public DbSet<Company> Companies { get; set; }
+        public DbSet<StockExchangeBuyRequest> StockExchangeBuyRequests { get; set; }
+        public DbSet<StockExchangeSellRequest> StockExchangeSellRequests { get; set; }
+        public DbSet<StockExchangeCompleted> StockExchangesCompleted { get; set; }
+        public DbSet<UserCompanyStocks> UserCompanyStocks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+            {
+                relationship.DeleteBehavior = DeleteBehavior.Restrict;
+            }
+
+
             modelBuilder.Entity<Colony>().HasData(
                 new Colony(1, "Earth"),
                 new Colony(2, "Luna"),
