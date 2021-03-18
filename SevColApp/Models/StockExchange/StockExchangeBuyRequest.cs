@@ -1,7 +1,11 @@
-﻿namespace SevColApp.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace SevColApp.Models
 {
     public class StockExchangeBuyRequest : StockExchangeRequest
     {
-        public int OfferPerStock { get; set; }
+        public uint OfferPerStock { get; set; }
+        [NotMapped]
+        public int AmountToPay { get; set; }
     }
 }

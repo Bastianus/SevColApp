@@ -1,7 +1,11 @@
-﻿namespace SevColApp.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace SevColApp.Models
 {
     public class StockExchangeSellRequest : StockExchangeRequest
     {
-        public int MinimumPerStock { get; set; }
+        public uint MinimumPerStock { get; set; }
+        [NotMapped]
+        public int AmountToBePaid { get; set; }
     }
 }
