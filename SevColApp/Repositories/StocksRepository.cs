@@ -116,7 +116,7 @@ namespace SevColApp.Repositories
             _context.StockExchangeSellRequests.Remove(sellRequest);
         }
 
-        public void RemoveSellRequest(StockExchangeBuyRequest buyRequest)
+        public void RemoveBuyRequest(StockExchangeBuyRequest buyRequest)
         {
             _context.StockExchangeBuyRequests.Remove(buyRequest);
         }
@@ -125,7 +125,7 @@ namespace SevColApp.Repositories
         {
             _context.StockExchangeSellRequests.Update(sellRequest);
         }
-        public void UpdateSellRequest(StockExchangeBuyRequest buyRequest)
+        public void UpdateBuyRequest(StockExchangeBuyRequest buyRequest)
         {
             _context.StockExchangeBuyRequests.Update(buyRequest);
         }

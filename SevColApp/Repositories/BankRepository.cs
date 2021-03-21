@@ -118,7 +118,6 @@ namespace SevColApp.Repositories
 
         public Transfer ExecuteTransfer(Transfer transfer)
         {
-
             try
             {
                 using var scope = new TransactionScope();
