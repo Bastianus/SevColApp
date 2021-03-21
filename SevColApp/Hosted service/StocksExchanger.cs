@@ -21,41 +21,30 @@ namespace SevColApp.Hosted_service
 
         public void ExchangeStocksForCompany(Company company, DateTime time)
         {
-            var buyRequests = _repo.GetBuyRequests(company);
 
-            var sellRequests = _repo.GetSellRequests(company);
+            uint numberOfStocksTransferred = 0;
 
-            if (buyRequests == null || sellRequests == null)
-            {
-                _logger.LogInformation($"For company {company.Name} there were no buy request and/or no sell requests.");
-                return;
-            }
+            bool tradingIsNotDone = true;
 
-            var stocksTransferred = MatchSellersAndBuyers(company, time);
-
-            _logger.LogInformation($"For company {company.Name} a total of {stocksTransferred} stocks were transferred.");
-        }
-
-        private int MatchSellersAndBuyers(Company company, DateTime time)
-        {
-            int numberOfStocksTransferred = 0;
-
-            bool offersAreHigherThanRemainingMinimums = true;
-
-
-            while (offersAreHigherThanRemainingMinimums)
+            while (tradingIsNotDone)
             {
                 var remainingBuyRequests = _repo.GetBuyRequests(company);
                 var remainingSellRequests = _repo.GetSellRequests(company);
+
+                if ( remainingBuyRequests.Count == 0 || remainingSellRequests.Count == 0)
+                {
+                    _logger.LogInformation($"For company {company.Name} there were no more buy request and/or no sell requests after {numberOfStocksTransferred} stocks were sold.");
+
+                    return;
+                }
 
                 var offerBatchWithLowestRemainingMinimum = StocksHelper.GetBatchOfLowestMinimumOffers(remainingSellRequests);
 
                 var amountOfStocksSold = SellStocksByBatch(offerBatchWithLowestRemainingMinimum, remainingBuyRequests, company, time);
 
-                if (amountOfStocksSold <= 0) offersAreHigherThanRemainingMinimums = false;
+                if (amountOfStocksSold <= 0) tradingIsNotDone = false;
+                else numberOfStocksTransferred += amountOfStocksSold;
             }
-
-            return numberOfStocksTransferred;
         }
 
         private uint SellStocksByBatch(List<StockExchangeSellRequest> offers, List<StockExchangeBuyRequest> buys, Company company, DateTime time)
@@ -90,6 +79,11 @@ namespace SevColApp.Hosted_service
                     buyerId = currentBuy.userId,
                     ExchangeDateAndTime = time
                 };
+
+                if (currentOffer.userId == currentBuy.userId)
+                {
+                    _repo.RemoveBuyRequest(currentBuy);
+                }
 
                 if (_repo.SellerHasNoBankAccount(currentOffer.userId) || !_repo.SellerHasEnoughStocks(currentOffer.userId, company.Id, currentOffer.NumberOfStocks))
                 {
