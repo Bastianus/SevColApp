@@ -16,12 +16,12 @@ namespace SevColAppTests
 
         [TestInitialize]
         public void Init()
-        {  
+        {
             var options = new DbContextOptionsBuilder<SevColContext>()
             .UseInMemoryDatabase(databaseName: "SevCol")
             .Options;
 
-            _context = new SevColContext(options);            
+            _context = new SevColContext(options);
         }
 
         [TestCleanup]
@@ -112,9 +112,9 @@ namespace SevColAppTests
             _context.BankAccounts.Add(wrongAccount);
 
 
-            var transfer1 = new Transfer { PayingAccountNumber = "test account number", ReceivingAccountNumber = "dummy", Amount = 58 , Time = new DateTime(2019, 12, 8)};
-            var transfer2 = new Transfer { PayingAccountNumber = "dummy", ReceivingAccountNumber = "test account number", Amount = 12, Time = new DateTime(2020, 6, 9)};
-            var transfer3 = new Transfer { PayingAccountNumber = "dummy", ReceivingAccountNumber = "wrong"};
+            var transfer1 = new Transfer { PayingAccountNumber = "test account number", ReceivingAccountNumber = "dummy", Amount = 58, Time = new DateTime(2019, 12, 8) };
+            var transfer2 = new Transfer { PayingAccountNumber = "dummy", ReceivingAccountNumber = "test account number", Amount = 12, Time = new DateTime(2020, 6, 9) };
+            var transfer3 = new Transfer { PayingAccountNumber = "dummy", ReceivingAccountNumber = "wrong" };
 
             _context.Transfers.Add(transfer1);
             _context.Transfers.Add(transfer2);
@@ -135,6 +135,44 @@ namespace SevColAppTests
             answer[0].Amount.ShouldBe(12);
 
             answer[1].Amount.ShouldBe(-58);
+        }
+
+        [TestMethod]
+        public void GetBankAccountDetailsByAccountName_ReturnsTheRightBankAccountDetails()
+        {
+            //arrange
+            var testAccountName = "test account name";
+            var rightAccount = new BankAccount { Id = 36, AccountName = testAccountName , AccountNumber = "test account number", Credit = 578};
+            var dummyAccount = new BankAccount { AccountNumber = "dummy", AccountName = "dummy" };
+            var wrongAccount = new BankAccount { AccountName = "wrong" };
+
+            _context.BankAccounts.Add(rightAccount);
+            _context.BankAccounts.Add(dummyAccount);
+            _context.BankAccounts.Add(wrongAccount);
+
+
+            var transfer1 = new Transfer { PayingAccountNumber = "test account number", ReceivingAccountNumber = "dummy", Amount = 58, Time = new DateTime(2019, 12, 8) };
+            var transfer2 = new Transfer { PayingAccountNumber = "dummy", ReceivingAccountNumber = "test account number", Amount = 12, Time = new DateTime(2020, 6, 9) };
+            var transfer3 = new Transfer { PayingAccountNumber = "dummy", ReceivingAccountNumber = "wrong" };
+
+            _context.Transfers.Add(transfer1);
+            _context.Transfers.Add(transfer2);
+            _context.Transfers.Add(transfer3);
+
+            _context.SaveChanges();
+
+            var sut = new BankRepository(_context);
+
+            //act
+            var answer = sut.GetBankAccountDetailsByAccountName(testAccountName);
+
+            //assert
+            answer.ShouldNotBeNull();
+            answer.Id.ShouldBe(36);
+            answer.AccountName.ShouldBe("test account name");
+            answer.AccountNumber.ShouldBe("test account number");
+            answer.Credit.ShouldBe(578);
+            answer.Transfers.Count().ShouldBe(2);
         }
     }
 }
