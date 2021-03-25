@@ -39,38 +39,54 @@ namespace SevColAppTests
         }
 
         [TestMethod]
-        public void HappyFlow()
+        public void ExchangeStocksForCompany_OneBuyer_OneSeller_OfferMoreThanMinimum_CreatesOneTransfer()
         {
             //arrange
-            var sellerBankAccount = new BankAccount { userId = 9 };
+            uint numberOfStocksRequested = 3;
+            uint numberOfStocksOffered = 3;
 
-            var buyerBankAccount = new BankAccount { userId = 6, Credit = 500 };
+            uint numberOfStocksSellerOwns = 80;
+
+            uint offerCredits = 100;
+            uint minimumCredits = 0;
+
+            int sellerId = 9;
+            int buyerId = 6;
+
+            int sellerStartingCredit = 0;
+            int buyerStartingCredit = 500;
+
+            int companyId = 7;
+
+            var sellerBankAccount = new BankAccount { userId = sellerId, Credit = sellerStartingCredit };
+
+            var buyerBankAccount = new BankAccount { userId = buyerId, Credit = buyerStartingCredit };
 
             _context.BankAccounts.Add(sellerBankAccount);
             _context.BankAccounts.Add(buyerBankAccount);
 
-            var sellerStocks = new UserCompanyStocks { userId = 9, companyId = 7, NumberOfStocks = 80 };
+            var sellerStocks = new UserCompanyStocks { userId = sellerId, companyId = companyId, NumberOfStocks = numberOfStocksSellerOwns };
 
             _context.UserCompanyStocks.Add(sellerStocks);
 
             var time = new DateTime(2021, 3, 21, 15, 46, 37);
 
-            var company = new Company { Id = 7, Name = "a company"};
+            var company = new Company { Id = companyId, Name = "a company"};
 
             var buyRequests = new List<StockExchangeBuyRequest> { new StockExchangeBuyRequest 
             { 
-                OfferPerStock = 100,
-                NumberOfStocks = 3,
-                userId = 6,
-                companyId = 7
+                OfferPerStock = offerCredits,
+                NumberOfStocks = numberOfStocksRequested,
+                userId = buyerId,
+                companyId = companyId
             } };
 
             var sellRequests = new List<StockExchangeSellRequest> { new StockExchangeSellRequest
             {
-                MinimumPerStock = 0,
-                NumberOfStocks = 3,
-                userId = 9,
-                companyId = 7
+                MinimumPerStock = minimumCredits,
+                NumberOfStocks = numberOfStocksOffered,
+                userId = sellerId,
+                companyId = companyId
             } };
 
 
@@ -89,16 +105,17 @@ namespace SevColAppTests
             //assert
             _context.StockExchangesCompleted.ToList().Count.ShouldBe(1);
 
-            ((int)_context.StockExchangesCompleted.First().NumberOfStocks).ShouldBe(3);
-            _context.StockExchangesCompleted.First().sellerId.ShouldBe(9);
-            _context.StockExchangesCompleted.First().buyerId.ShouldBe(6);
-            _context.StockExchangesCompleted.First().ExchangeDateAndTime.ShouldBe(time);
-            _context.StockExchangesCompleted.First().companyId.ShouldBe(7);
-            ((int)_context.StockExchangesCompleted.First().AmountPerStock).ShouldBe(100);
+            var completedExchange = _context.StockExchangesCompleted.First();
+            ((int)completedExchange.NumberOfStocks).ShouldBe(3);
+            completedExchange.sellerId.ShouldBe(sellerId);
+            completedExchange.buyerId.ShouldBe(buyerId);
+            completedExchange.ExchangeDateAndTime.ShouldBe(time);
+            completedExchange.companyId.ShouldBe(companyId);
+            ((int)completedExchange.AmountPerStock).ShouldBe((int)offerCredits);
 
-            _context.BankAccounts.Where(ba => ba.userId == 6).Single().Credit.ShouldBe(200);
+            _context.BankAccounts.Where(ba => ba.userId == buyerId).Single().Credit.ShouldBe(buyerStartingCredit - completedExchange.AmountPerStock * completedExchange.NumberOfStocks);
 
-            _context.BankAccounts.Where(ba => ba.userId == 9).Single().Credit.ShouldBe(300);
+            _context.BankAccounts.Where(ba => ba.userId == sellerId).Single().Credit.ShouldBe(sellerStartingCredit + completedExchange.AmountPerStock * completedExchange.NumberOfStocks);
         }
     }
 }

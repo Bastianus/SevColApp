@@ -85,20 +85,6 @@ namespace SevColApp.Hosted_service
                     _repo.RemoveBuyRequest(currentBuy);
                 }
 
-                if (_repo.SellerHasNoBankAccount(currentOffer.userId) || !_repo.SellerHasEnoughStocks(currentOffer.userId, company.Id, currentOffer.NumberOfStocks))
-                {
-                    sellIndex++;
-
-                    continue;
-                }
-
-                if (!_repo.BuyerHasEnoughMoney(currentBuy, currentOffer.NumberOfStocks, price))
-                {
-                    buyIndex++;
-
-                    continue;
-                }
-
                 uint stocksExchanged;
 
                 if (currentOffer.NumberOfStocks == currentBuy.NumberOfStocks)

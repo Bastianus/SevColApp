@@ -18,7 +18,7 @@ namespace SevColApp.Helpers
             {
                 if (buys[i].OfferPerStock >= offers.First().MinimumPerStock)
                 {
-                    stocksOnOffer -= buys[i].NumberOfStocks;
+                    stocksOnOffer -= (int)buys[i].NumberOfStocks;
                 }
                 else
                 {
@@ -42,14 +42,14 @@ namespace SevColApp.Helpers
             offers = offers.Where(o => o.NumberOfStocks > 0).OrderBy(o => o.MinimumPerStock).ToList();
             var currentLowestMinimum = offers.First().MinimumPerStock;
 
-            return offers.Where(o => o.MinimumPerStock == 0).ToList();
+            return offers.Where(o => o.MinimumPerStock == currentLowestMinimum).ToList();
         }
 
-        private static uint CalculateNumberOfStocksInBatch(List<StockExchangeSellRequest> offers)
+        private static int CalculateNumberOfStocksInBatch(List<StockExchangeSellRequest> offers)
         {
-            uint totalNumberOfStocks = 0;
+            int totalNumberOfStocks = 0;
 
-            foreach (var offer in offers) totalNumberOfStocks += offer.NumberOfStocks;
+            foreach (var offer in offers) totalNumberOfStocks += (int)offer.NumberOfStocks;
 
             return totalNumberOfStocks;
         }

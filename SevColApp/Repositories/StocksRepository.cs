@@ -31,26 +31,21 @@ namespace SevColApp.Repositories
             return _context.StockExchangeSellRequests.Where(br => br.companyId == company.Id).OrderBy(br => br.MinimumPerStock).ThenBy(br => br.NumberOfStocks).ToList();
         }
 
-        public bool BuyerHasEnoughMoney(StockExchangeBuyRequest buyerRequest, uint numberOfStocks, uint pricePerStock)
+        public long UserTotalCredits(int userId)
         {
-            var buyersTotalCredit = _context.BankAccounts.Where(ba => ba.userId == buyerRequest.userId)?.Select(ba => ba.Credit).Sum();
-
-            if (buyersTotalCredit == null) buyersTotalCredit = 0;
-
-            var totalPrice = numberOfStocks * pricePerStock;
-
-            return buyersTotalCredit >= totalPrice;
+            return _context.BankAccounts.Where(ba => ba.userId == userId)?.Select(ba => ba.Credit).Sum() ?? 0;
         }
 
-        public bool SellerHasEnoughStocks(int sellerId, int companyId, uint numberOfStocks)
+        public uint AmountOfSellerStocks(int sellerId, Company company)
         {
-            return _context.UserCompanyStocks.Any(uc => uc.userId == sellerId && uc.companyId == companyId)
-                && _context.UserCompanyStocks.Where(uc => uc.userId == sellerId && uc.companyId == companyId).First().NumberOfStocks >= numberOfStocks;
+            if (!_context.UserCompanyStocks.Any(uc => uc.companyId == company.Id && uc.userId == sellerId)) return 0;
+
+            return _context.UserCompanyStocks.Where(uc => uc.companyId == company.Id && uc.userId == sellerId).Single().NumberOfStocks;
         }
 
-        public bool SellerHasNoBankAccount(int sellerId)
+        public bool UserHasNoBankAccount(int userId)
         {
-            return !_context.BankAccounts.Any(ba => ba.userId == sellerId);
+            return !_context.BankAccounts.Any(ba => ba.userId == userId);
         }
 
         public void TransferStocks(int buyerId, int sellerId, int companyId, uint numberOfStocksTransferred)
