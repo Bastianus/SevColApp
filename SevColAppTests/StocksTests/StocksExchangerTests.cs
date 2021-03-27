@@ -11,7 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SevColAppTests
+namespace SevColAppTests.StockTests
 {
     [TestClass]
     public class StocksExchangerTests

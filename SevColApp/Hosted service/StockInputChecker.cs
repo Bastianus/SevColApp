@@ -1,4 +1,6 @@
-﻿using SevColApp.Repositories;
+﻿using SevColApp.Models;
+using SevColApp.Repositories;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SevColApp.Hosted_service
@@ -21,7 +23,7 @@ namespace SevColApp.Hosted_service
                 var allSellRequests = _repo.GetSellRequests(company).OrderBy(sr => sr.userId).ThenByDescending(sr => sr.MinimumPerStock).ToList();
 
                 int i = 0;
-                while(i < allSellRequests.Count)
+                while (i < allSellRequests.Count)
                 {
                     int currentUserId = allSellRequests[i].userId;
 
@@ -30,6 +32,7 @@ namespace SevColApp.Hosted_service
                     if (_repo.UserHasNoBankAccount(currentUserId))
                     {
                         currentSellRequests.ForEach(sr => _repo.RemoveSellRequest(sr));
+                        _repo.Save();
                     }
                     else
                     {
@@ -37,7 +40,7 @@ namespace SevColApp.Hosted_service
 
                         var totalStocksOfferedBySellerSoFar = 0;
 
-                        for (int j = 0; j < currentSellRequests.Count;)
+                        for (int j = 0; j < currentSellRequests.Count; j++)
                         {
                             var currentSellRequest = currentSellRequests[j];
 
@@ -45,12 +48,13 @@ namespace SevColApp.Hosted_service
 
                             if (totalStocksOfferedBySellerSoFar > stocksOwnedBySeller)
                             {
-                                totalStocksOfferedBySellerSoFar -= (int)currentSellRequest.NumberOfStocks;
-
                                 _repo.RemoveSellRequest(currentSellRequest);
+                                _repo.Save();
+
+                                totalStocksOfferedBySellerSoFar -= (int)currentSellRequest.NumberOfStocks;
                             }
                         }
-                    }                    
+                    }
 
                     i += currentSellRequests.Count;
                 }
@@ -61,45 +65,50 @@ namespace SevColApp.Hosted_service
         {
             var allCompanies = _repo.GetAllCompanies();
 
-            allCompanies.ForEach(company =>
+            var allBuyRequestForAllCompanies = new List<StockExchangeBuyRequest>();
+
+            allCompanies.ForEach(company => allBuyRequestForAllCompanies.AddRange(_repo.GetBuyRequests(company)));
+
+            allBuyRequestForAllCompanies.OrderBy(br => br.userId).ThenBy(br => br.OfferPerStock);
+
+
+            int i = 0;
+            while (i < allBuyRequestForAllCompanies.Count)
             {
-                var allBuyRequests = _repo.GetBuyRequests(company).OrderBy(br => br.userId).ThenBy(br => br.OfferPerStock).ToList();
+                int currentuserId = allBuyRequestForAllCompanies[i].userId;
 
-                int i = 0;
-                while(i < allBuyRequests.Count)
+                var currentBuyRequests = allBuyRequestForAllCompanies.Where(br => br.userId == currentuserId).ToList();
+
+                if (_repo.UserHasNoBankAccount(currentuserId))
                 {
-                    int currentuserId = allBuyRequests[i].userId;
+                    currentBuyRequests.ForEach(br => _repo.RemoveBuyRequest(br));
+                    _repo.Save();
+                }
+                else
+                {
+                    var buyerTotalCredits = _repo.UserTotalCredits(currentuserId);
 
-                    var currentBuyRequests = allBuyRequests.Where(br => br.userId == currentuserId).ToList();
+                    long totalPossiblySpent = 0;
 
-                    if (_repo.UserHasNoBankAccount(currentuserId))
+                    for (int j = 0; j < currentBuyRequests.Count; j++)
                     {
-                        currentBuyRequests.ForEach(br => _repo.RemoveBuyRequest(br));
-                    }
-                    else
-                    {
-                        var buyerTotalCredits = _repo.UserTotalCredits(currentuserId);
+                        var currentBuyRequest = currentBuyRequests[j];
 
-                        long totalPossiblySpent = 0;
+                        totalPossiblySpent += currentBuyRequest.NumberOfStocks * currentBuyRequest.OfferPerStock;
 
-                        for(int j = 0;j < currentBuyRequests.Count; j++)
+                        if (totalPossiblySpent > buyerTotalCredits)
                         {
-                            var currentBuyRequest = currentBuyRequests[j];
+                            _repo.RemoveBuyRequest(currentBuyRequest);
+                            _repo.Save();
 
-                            totalPossiblySpent += currentBuyRequest.NumberOfStocks * currentBuyRequest.OfferPerStock;
-
-                            if(totalPossiblySpent > buyerTotalCredits)
-                            {
-                                _repo.RemoveBuyRequest(currentBuyRequest);
-
-                                totalPossiblySpent -= currentBuyRequest.NumberOfStocks * currentBuyRequest.OfferPerStock;
-                            }
+                            totalPossiblySpent -= currentBuyRequest.NumberOfStocks * currentBuyRequest.OfferPerStock;
                         }
                     }
-
-                    i += currentBuyRequests.Count;
                 }
-            });
+
+                i += currentBuyRequests.Count;
+            }
+
         }
     }
 }
