@@ -12,13 +12,15 @@ namespace SevColApp.Controllers
     public class StocksController : Controller
     {
         private readonly IStocksRepository _repo;
+        private readonly IHomeRepository _userRepo;
         private readonly ILogger<StocksController> _logger;
         private readonly CookieHelper _cookieHelper;
 
-        public StocksController(ILogger<StocksController> logger, IStocksRepository repo, CookieHelper cookieHelper)
+        public StocksController(ILogger<StocksController> logger, IStocksRepository repo, IHomeRepository userRepo, CookieHelper cookieHelper)
         {
             _logger = logger;
             _repo = repo;
+            _userRepo = userRepo;
             _cookieHelper = cookieHelper;
 
             _logger.LogInformation("Stocks controller started");
@@ -33,8 +35,9 @@ namespace SevColApp.Controllers
 
             var id = _cookieHelper.GetUserIdFromCookie();
 
-            return View();
+            var userName = _userRepo.FindUserById(id).FullName;
 
+            return View("Index", userName);
         }
 
     }

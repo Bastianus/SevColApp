@@ -22,6 +22,7 @@ namespace SevColApp.Hosted_service
             _logger = logger;
             _repo = repo;
             _stocksExchanger = stocksExchanger;
+            _stockInputChecker = stockInputChecker;
         }
 
         public async Task ExchangeStocks(CancellationToken token)
