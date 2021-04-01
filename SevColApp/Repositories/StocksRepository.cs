@@ -128,6 +128,27 @@ namespace SevColApp.Repositories
         {
             _context.StockExchangesCompleted.Add(exchange);
         }
+
+        public UsersCurrentStocks GetStocksFromUser(int id)
+        {
+            var answer = new UsersCurrentStocks();
+
+            foreach(var company in _context.Companies)
+            {
+                var userStocksInCompanyBought = _context.StockExchangesCompleted.Where(sec => sec.companyId == company.Id && sec.buyerId == id).Sum(sec => sec.NumberOfStocks);
+
+                var userStocksInCompanySold = _context.StockExchangesCompleted.Where(sec => sec.companyId == company.Id && sec.sellerId == id).Sum(sec => sec.NumberOfStocks);
+
+                var userStocksInCompany = userStocksInCompanyBought - userStocksInCompanySold;
+
+                answer.UserStocks.Add(new UserStocks { Company = company, NumberofStocks = userStocksInCompany });                
+            }
+
+            answer.UserStocks.OrderByDescending(us => us.NumberofStocks).ThenBy(us => us.Company.Name);
+
+            return answer;
+        }
+
         public void Save()
         {
             _context.SaveChanges();

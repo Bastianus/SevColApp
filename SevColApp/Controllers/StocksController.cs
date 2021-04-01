@@ -40,5 +40,18 @@ namespace SevColApp.Controllers
             return View("Index", userName);
         }
 
+        public IActionResult CurrentStocks()
+        {
+            if (!_cookieHelper.IsThereACookie())
+            {
+                return RedirectToAction("Login", "Home");
+            }
+
+            var id = _cookieHelper.GetUserIdFromCookie();
+
+            var usersStocks = _repo.GetStocksFromUser(id);
+
+            return View(usersStocks);
+        }
     }
 }

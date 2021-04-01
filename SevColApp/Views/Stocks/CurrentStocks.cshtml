@@ -1,0 +1,30 @@
+﻿@model SevColApp.Models.UsersCurrentStocks
+
+@{
+    ViewData["Title"] = "User stocks";
+}
+
+<html>
+<body class="stockspage">
+    <h1 class="bankingtext">These are your current stocks:</h1>
+
+    <table class="table table-borderless w-auto">
+        <thead>
+            <tr>
+                <th class="bankingtext">Company name</th>
+                <th class="bankingtext">Number of stocks</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var companyStocks in Model.UserStocks)
+            {
+                <tr>
+                    <td class="bankingtext">@companyStocks.Company.Name</td>
+                    <td class="bankingtext">@companyStocks.NumberofStocks</td>
+                </tr>
+            }
+            </tbody>
+    </table>
+</body>
+</html>

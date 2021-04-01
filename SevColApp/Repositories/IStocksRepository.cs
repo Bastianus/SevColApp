@@ -18,6 +18,7 @@ namespace SevColApp.Repositories
         void UpdateSellRequest(StockExchangeSellRequest sellRequest);
         void UpdateBuyRequest(StockExchangeBuyRequest buyRequest);
         void AddCompletedExchange(StockExchangeCompleted exchange);
+        UsersCurrentStocks GetStocksFromUser(int id);
         void Save();
     }
 }

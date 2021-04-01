@@ -57,6 +57,10 @@ namespace SevColApp.Context
                 new Bank(13, "SevCol Bank", "SCB", 8)
                 );
 
+            modelBuilder.Entity<Company>().HasData(
+                new Company { Id = 1, Name = "TestCompany"}
+                );
+
             modelBuilder.Entity<User>().HasData(
                 new User() { Id = 7777777, LoginName = "GameMaster",FirstName = "SevCol", Prefixes = "Game", LastName = "Master", PasswordHash = PasswordHelper.GetPasswordHash("ForRealsies") });
         }
