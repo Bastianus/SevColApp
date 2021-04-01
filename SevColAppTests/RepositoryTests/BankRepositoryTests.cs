@@ -8,7 +8,7 @@ using Shouldly;
 using System;
 using System.Linq;
 
-namespace SevColAppTests
+namespace SevColAppTests.RepositoryTests
 {
     [TestClass]
     public class BankRepositoryTests

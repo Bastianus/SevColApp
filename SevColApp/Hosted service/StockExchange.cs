@@ -15,8 +15,9 @@ namespace SevColApp.Hosted_service
         private readonly ILogger _logger;
         private readonly IStocksRepository _repo;
         private readonly IStocksExchanger _stocksExchanger;
+        private readonly IStockInputChecker _stockInputChecker;
 
-        public StockExchange(ILogger<SevColContext> logger, IStocksRepository repo, IStocksExchanger stocksExchanger)
+        public StockExchange(ILogger<SevColContext> logger, IStocksRepository repo, IStocksExchanger stocksExchanger, IStockInputChecker stockInputChecker)
         {
             _logger = logger;
             _repo = repo;
@@ -28,6 +29,9 @@ namespace SevColApp.Hosted_service
             while (!token.IsCancellationRequested)
             {
                 _logger.LogInformation($"Exchange of stocks started at {DateTime.Now}.");
+
+                _stockInputChecker.CheckAllBuyRequestsAndRemoveInvalids();
+                _stockInputChecker.CheckAllSellRequestsAndRemoveInvalids();
 
                 var allCompanies = _repo.GetAllCompanies();
 

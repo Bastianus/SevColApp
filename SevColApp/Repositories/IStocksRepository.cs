@@ -8,9 +8,9 @@ namespace SevColApp.Repositories
         List<Company> GetAllCompanies();
         List<StockExchangeBuyRequest> GetBuyRequests(Company company);
         List<StockExchangeSellRequest> GetSellRequests(Company company);
-        bool BuyerHasEnoughMoney(StockExchangeBuyRequest buyerRequest, uint numberOfStocks, uint pricePerStock);        
-        bool SellerHasEnoughStocks(int sellerId, int companyId, uint numberOfStocks);
-        bool SellerHasNoBankAccount(int sellerId);
+        long UserTotalCredits(int userId);
+        uint AmountOfSellerStocks(int sellerId, Company company);
+        bool UserHasNoBankAccount(int userId);
         void TransferStocks(int buyerId, int sellerId, int companyId, uint numberOfStocksTransferred);
         void ArrangePayment(int buyerId, int sellerId, long priceToPay);
         void RemoveSellRequest(StockExchangeSellRequest sellRequest);
