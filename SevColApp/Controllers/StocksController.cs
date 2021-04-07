@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SevColApp.Helpers;
+using SevColApp.Models;
 using SevColApp.Repositories;
 using System;
 using System.Collections.Generic;
@@ -52,6 +53,55 @@ namespace SevColApp.Controllers
             var usersStocks = _repo.GetStocksFromUser(id);
 
             return View(usersStocks);
+        }
+
+        public IActionResult BuyRequest()
+        {
+            if (!_cookieHelper.IsThereACookie())
+            {
+                return RedirectToAction("Login", "Home");
+            }
+
+            var companies = _repo.GetAllCompanies();
+
+            return View("BuyRequest", companies);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult BuyRequest(StockExchangeBuyRequest request)
+        {
+            var answer = _repo.AddBuyRequest(request);
+
+            return View("BuyRequestResults", answer);
+        }
+
+        public IActionResult SellRequest()
+        {
+            if (!_cookieHelper.IsThereACookie())
+            {
+                return RedirectToAction("Login", "Home");
+            }
+
+            var id = _cookieHelper.GetUserIdFromCookie();
+
+            var userStocks = _repo.GetStocksFromUser(id);
+
+            return View("SellRequest", userStocks);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult SellRequest(StockExchangeSellRequest request)
+        {
+            var answer = _repo.AddSellRequest(request);
+            
+            return View("BuyRequestResults", answer);
+        }
+
+        public IActionResult Test()
+        {
+            return View();
         }
     }
 }

@@ -21,6 +21,36 @@ namespace SevColApp.Repositories
             return _context.Companies.ToList();
         }
 
+        public StockExchangeBuyRequest AddBuyRequest(StockExchangeBuyRequest request)
+        {  
+            if (!CompanyExists(request.CompanyName)) request.Errors.Add($"The company {request.CompanyName} does not exist.");
+
+            if (UserHasNoBankAccount(request.userId)) request.Errors.Add($"You need a bank account.");
+            else if (!UserHasEnoughMoney(request.userId, request.NumberOfStocks, request.OfferPerStock)) request.Errors.Add($"You do not have {request.NumberOfStocks * request.OfferPerStock} credits on your bank accounts to pay for this request.");
+
+            if(request.Errors.Count == 0)
+            {
+                _context.StockExchangeBuyRequests.Add(request);
+            }
+
+            return request;
+        }
+
+        public StockExchangeSellRequest AddSellRequest(StockExchangeSellRequest request)
+        {
+            if (!CompanyExists(request.CompanyName)) request.Errors.Add($"The company {request.CompanyName} does not exist.");
+            else if (!UserHasEnoughStocksFromCompany(request.CompanyName, request.NumberOfStocks)) request.Errors.Add($"You do not have enough stocks from {request.CompanyName}.");
+
+            if (UserHasNoBankAccount(request.userId)) request.Errors.Add($"You need a bank account.");
+
+            if(request.Errors.Count == 0)
+            {
+                _context.StockExchangeSellRequests.Add(request);
+            }
+
+            return request;
+        }
+
         public List<StockExchangeBuyRequest> GetBuyRequests(Company company)
         {
             return _context.StockExchangeBuyRequests.Where(br => br.companyId == company.Id).OrderByDescending(br => br.OfferPerStock).ThenBy(br => br.NumberOfStocks).ToList();
@@ -152,6 +182,27 @@ namespace SevColApp.Repositories
         public void Save()
         {
             _context.SaveChanges();
+        }
+
+        private bool CompanyExists(string companyName)
+        {
+            return _context.Companies.Any(c => c.Name == companyName);
+        }
+
+        private bool UserHasEnoughMoney(int userId, uint numberOfStocks, uint offerPerStock)
+        {
+            return UserTotalCredits(userId) >= numberOfStocks * offerPerStock;
+        }
+
+        private bool UserHasEnoughStocksFromCompany(string companyName, uint numberOfStocksOffered)
+        {
+            var companyId = _context.Companies.First(c => c.Name == companyName).Id;
+
+            var userStocksOfCompany = _context.UserCompanyStocks.FirstOrDefault(ucs => ucs.companyId == companyId);
+
+            if (userStocksOfCompany == null) return false;
+
+            return userStocksOfCompany.NumberOfStocks >= numberOfStocksOffered;
         }
     }
 }

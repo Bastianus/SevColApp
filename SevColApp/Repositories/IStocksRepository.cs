@@ -6,6 +6,8 @@ namespace SevColApp.Repositories
     public interface IStocksRepository
     {
         List<Company> GetAllCompanies();
+        StockExchangeBuyRequest AddBuyRequest(StockExchangeBuyRequest request);
+        StockExchangeSellRequest AddSellRequest(StockExchangeSellRequest request);
         List<StockExchangeBuyRequest> GetBuyRequests(Company company);
         List<StockExchangeSellRequest> GetSellRequests(Company company);
         long UserTotalCredits(int userId);

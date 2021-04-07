@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SevColApp.Models
 {
@@ -12,5 +13,14 @@ namespace SevColApp.Models
         public virtual Company Company { get; set; }
         [NotMapped]
         public string Password { get; set; }
+        [NotMapped]
+        public List<string> Errors { get; set; }
+        [NotMapped]
+        public string CompanyName { get; set; }
+
+        public StockExchangeRequest()
+        {
+            Errors = new List<string>();
+        }
     }
 }
