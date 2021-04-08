@@ -21,6 +21,7 @@ namespace SevColApp.Repositories
         void UpdateBuyRequest(StockExchangeBuyRequest buyRequest);
         void AddCompletedExchange(StockExchangeCompleted exchange);
         UsersCurrentStocks GetStocksFromUser(int id);
+        List<BankAccount> GetBankAccountsFromUser(int userId);
         void Save();
     }
 }

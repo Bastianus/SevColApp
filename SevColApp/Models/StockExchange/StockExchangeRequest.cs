@@ -11,6 +11,8 @@ namespace SevColApp.Models
         public virtual User User { get; set; }
         public int companyId { get; set; }
         public virtual Company Company { get; set; }
+        public string AccountNumber { get; set; }
+
         [NotMapped]
         public string Password { get; set; }
         [NotMapped]

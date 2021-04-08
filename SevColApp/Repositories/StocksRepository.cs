@@ -22,11 +22,14 @@ namespace SevColApp.Repositories
         }
 
         public StockExchangeBuyRequest AddBuyRequest(StockExchangeBuyRequest request)
-        {  
+        {
+            if (request.NumberOfStocks < 1) request.Errors.Add($"The number of stocks requested ({request.NumberOfStocks}) has to be greater than zero.");
+
+            if (request.OfferPerStock < 0) request.Errors.Add($"The offer per stock ({request.OfferPerStock}) cannot be negative.");
+
             if (!CompanyExists(request.CompanyName)) request.Errors.Add($"The company {request.CompanyName} does not exist.");
 
-            if (UserHasNoBankAccount(request.userId)) request.Errors.Add($"You need a bank account.");
-            else if (!UserHasEnoughMoney(request.userId, request.NumberOfStocks, request.OfferPerStock)) request.Errors.Add($"You do not have {request.NumberOfStocks * request.OfferPerStock} credits on your bank accounts to pay for this request.");
+            if (!BankAccountHasEnoughMoney(request.AccountNumber, request.NumberOfStocks, request.OfferPerStock)) request.Errors.Add($"You do not have {request.NumberOfStocks * request.OfferPerStock} credits on bank account with account number {request.AccountNumber} to pay for this request.");
 
             if(request.Errors.Count == 0)
             {
@@ -179,6 +182,11 @@ namespace SevColApp.Repositories
             return answer;
         }
 
+        public List<BankAccount> GetBankAccountsFromUser(int userId)
+        {
+            return _context.BankAccounts.Where(ba => ba.userId == userId).OrderByDescending(ba => ba.Credit).ToList();
+        }
+
         public void Save()
         {
             _context.SaveChanges();
@@ -189,9 +197,9 @@ namespace SevColApp.Repositories
             return _context.Companies.Any(c => c.Name == companyName);
         }
 
-        private bool UserHasEnoughMoney(int userId, uint numberOfStocks, uint offerPerStock)
+        private bool BankAccountHasEnoughMoney(string accountNumber, uint numberOfStocks, uint offerPerStock)
         {
-            return UserTotalCredits(userId) >= numberOfStocks * offerPerStock;
+            return _context.BankAccounts.First(ba => ba.AccountNumber == accountNumber).Credit >= numberOfStocks * offerPerStock;
         }
 
         private bool UserHasEnoughStocksFromCompany(string companyName, uint numberOfStocksOffered)

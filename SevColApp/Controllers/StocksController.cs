@@ -3,10 +3,6 @@ using Microsoft.Extensions.Logging;
 using SevColApp.Helpers;
 using SevColApp.Models;
 using SevColApp.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SevColApp.Controllers
 {
@@ -14,14 +10,16 @@ namespace SevColApp.Controllers
     {
         private readonly IStocksRepository _repo;
         private readonly IHomeRepository _userRepo;
+        private readonly IBankRepository _bankRepo;
         private readonly ILogger<StocksController> _logger;
         private readonly CookieHelper _cookieHelper;
 
-        public StocksController(ILogger<StocksController> logger, IStocksRepository repo, IHomeRepository userRepo, CookieHelper cookieHelper)
+        public StocksController(ILogger<StocksController> logger, IStocksRepository repo, IHomeRepository userRepo, IBankRepository bankRepo, CookieHelper cookieHelper)
         {
             _logger = logger;
             _repo = repo;
             _userRepo = userRepo;
+            _bankRepo = bankRepo;
             _cookieHelper = cookieHelper;
 
             _logger.LogInformation("Stocks controller started");
@@ -62,16 +60,37 @@ namespace SevColApp.Controllers
                 return RedirectToAction("Login", "Home");
             }
 
-            var companies = _repo.GetAllCompanies();
+            var userId = _cookieHelper.GetUserIdFromCookie();
 
-            return View("BuyRequest", companies);
+            var input = new BuyRequestInputOutput
+            {
+                Companies = _repo.GetAllCompanies(),
+                BankAccounts = _repo.GetBankAccountsFromUser(userId),
+                BuyRequest = new StockExchangeBuyRequest
+                {
+                    userId = userId
+                }
+            };
+
+            return View("BuyRequest", input);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult BuyRequest(StockExchangeBuyRequest request)
+        public IActionResult BuyRequest(BuyRequestInputOutput input)
         {
-            var answer = _repo.AddBuyRequest(request);
+            StockExchangeBuyRequest answer;
+
+            if(_bankRepo.IsAccountPasswordCorrect(input.BuyRequest.AccountNumber, input.BuyRequest.Password))
+            {
+                answer = _repo.AddBuyRequest(input.BuyRequest);
+            }
+            else
+            {
+                answer = input.BuyRequest;
+
+                answer.Errors.Add($"The password for the account with account number {input.BuyRequest.AccountNumber} is incorrect or the account number is unknown.");
+            }            
 
             return View("BuyRequestResults", answer);
         }

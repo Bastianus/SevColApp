@@ -1,0 +1,82 @@
+﻿@model SevColApp.Models.BuyRequestInputOutput
+
+@{
+    ViewData["Title"] = "Buy request input Page";
+}
+<html>
+
+<body class="bankingpage">
+
+
+    <form asp-action="BuyRequest">
+
+        <table class="table table-borderless ">
+
+            <tr>
+                <th class="bankingtext">Company:</th>
+                <td class="input-group float-left form-input">
+                    <select asp-for="BuyRequest.CompanyName" class="custom-select">
+                        <option selected>Choose the desired company</option>
+                        @foreach (var company in @Model.Companies)
+                        {
+                            <option>@company.Name</option>
+                        }
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <th class="bankingtext">Number of stocks:</th>
+                <td>
+                    <input asp-for="BuyRequest.NumberOfStocks" min="0" class="form-control form-input float-left" />
+                    <span asp-validation-for="BuyRequest.NumberOfStocks" class="text-danger"></span>
+                </td>
+            </tr>
+
+            <tr>
+                <th class="bankingtext">Credits offered per stock:</th>
+                <td>
+                    <input asp-for="BuyRequest.OfferPerStock" min="0" class="form-control form-input float-left" />
+                    <span asp-validation-for="BuyRequest.OfferPerStock" class="text-danger"></span>
+                </td>
+            </tr>
+
+            <tr>
+                <th class="bankingtext">Use bank account:</th>
+                <td class="input-group float-left form-input">
+                    <select asp-for="BuyRequest.AccountNumber" class="custom-select">
+                        <option selected>Choose the desired bank account</option>
+                        @foreach (var bankAccount in @Model.BankAccounts)
+                        {
+                            <option>@bankAccount.AccountNumber</option>
+                        }
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <th class="bankingtext">Password for the chosen bank account:</th>
+                <td>
+                    <input type="password" asp-for="BuyRequest.Password" class="form-control form-input float-left" />
+                    <span asp-validation-for="BuyRequest.Password" class="text-danger"></span>
+                </td>
+            </tr>
+
+            <tr class="form-group">
+                <th></th>
+                <td>
+                    <input type="submit" value="Create" class="btn btn-light" />
+                </td>
+            </tr>
+
+        </table>
+
+    </form>
+
+    <div id='under-construction'>
+        <div id='frame'></div>
+    </div>
+
+
+</body>
+</html>
