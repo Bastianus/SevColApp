@@ -142,6 +142,11 @@ namespace SevColApp.Repositories
             return transfer;
         }
 
+        public BankAccount GetBankAccountByAccountNumber(string accountNumber)
+        {
+            return _context.BankAccounts.SingleOrDefault(ba => ba.AccountNumber == accountNumber);
+        }
+
         public bool IsAccountPasswordCorrect(string accountNumber, string password)
         {
             var account = _context.BankAccounts.Where(x => x.AccountNumber == accountNumber).FirstOrDefault();

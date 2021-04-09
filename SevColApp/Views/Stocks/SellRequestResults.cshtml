@@ -1,4 +1,4 @@
-﻿@model SevColApp.Models.StockExchangeBuyRequest
+﻿@model SevColApp.Models.StockExchangeSellRequest
 
 @{
     ViewData["Title"] = "Buy request input Page";
@@ -15,12 +15,12 @@
     }
     @if (Model.Errors.Count == 0)
     {
-        <h5 class="bankingtext">Buy request submitted for @Model.NumberOfStocks stocks for @Model.CompanyName at @Model.OfferPerStock credits each.</h5>
+        <h5 class="bankingtext">Sell request submitted for @Model.NumberOfStocks stocks for @Model.CompanyName with a reserve of @Model.MinimumPerStock credits each.</h5>
     }
 
     <a asp-area="" asp-controller="Stocks" asp-action="Index" class="btn btn-light">Back to stocks</a>
 
-    <a asp-area="" asp-controller="Stocks" asp-action="BuyRequest" class="btn btn-light">Make another buy request</a>
+    <a asp-area="" asp-controller="Stocks" asp-action="SellRequest" class="btn btn-light">Make another sell request</a>
 
     <div id='under-construction'>
         <div id='frame'></div>

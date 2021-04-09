@@ -15,6 +15,7 @@ namespace SevColApp.Repositories
         List<string> GetAllBankAccountNumbers();
         BankAccount CreateNewAccount(InputOutputAccountCreate input, int userId);
         Transfer ExecuteTransfer(Transfer transfer);
+        BankAccount GetBankAccountByAccountNumber(string accountNumber);
         bool IsAccountPasswordCorrect(string accountNumber, string password);
     }
 }

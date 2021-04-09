@@ -14,7 +14,7 @@ namespace SevColApp.Repositories
         uint AmountOfSellerStocks(int sellerId, Company company);
         bool UserHasNoBankAccount(int userId);
         void TransferStocks(int buyerId, int sellerId, int companyId, uint numberOfStocksTransferred);
-        void ArrangePayment(int buyerId, int sellerId, long priceToPay);
+        void ArrangePayment(string buyerAccountNumber, string sellerAccountNumber, long priceToPay);
         void RemoveSellRequest(StockExchangeSellRequest sellRequest);
         void RemoveBuyRequest(StockExchangeBuyRequest buyRequest);
         void UpdateSellRequest(StockExchangeSellRequest sellRequest);

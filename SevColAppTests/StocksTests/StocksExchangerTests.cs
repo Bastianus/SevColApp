@@ -58,9 +58,9 @@ namespace SevColAppTests.StockTests
 
             int companyId = 7;
 
-            var sellerBankAccount = new BankAccount { userId = sellerId, Credit = sellerStartingCredit };
+            var sellerBankAccount = new BankAccount { userId = sellerId, Credit = sellerStartingCredit, AccountNumber = "sellerAN" };
 
-            var buyerBankAccount = new BankAccount { userId = buyerId, Credit = buyerStartingCredit };
+            var buyerBankAccount = new BankAccount { userId = buyerId, Credit = buyerStartingCredit, AccountNumber = "buyerAN" };
 
             _context.BankAccounts.Add(sellerBankAccount);
             _context.BankAccounts.Add(buyerBankAccount);
@@ -78,7 +78,8 @@ namespace SevColAppTests.StockTests
                 OfferPerStock = offerCredits,
                 NumberOfStocks = numberOfStocksRequested,
                 userId = buyerId,
-                companyId = companyId
+                companyId = companyId,
+                AccountNumber = "buyerAN"
             } };
 
             var sellRequests = new List<StockExchangeSellRequest> { new StockExchangeSellRequest
@@ -86,7 +87,8 @@ namespace SevColAppTests.StockTests
                 MinimumPerStock = minimumCredits,
                 NumberOfStocks = numberOfStocksOffered,
                 userId = sellerId,
-                companyId = companyId
+                companyId = companyId,
+                AccountNumber = "sellerAN"
             } };
 
 
@@ -97,7 +99,9 @@ namespace SevColAppTests.StockTests
 
             var repo = new StocksRepository(_context);
 
-            var sut = new StocksExchanger(_logger.Object, repo);
+            var bankRepo = new BankRepository(_context);
+
+            var sut = new StocksExchanger(_logger.Object, repo, bankRepo);
 
             //act
             sut.ExchangeStocksForCompany(company, time);

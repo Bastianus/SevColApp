@@ -69,7 +69,7 @@ namespace SevColApp.Hosted_service
 
             allCompanies.ForEach(company => allBuyRequestForAllCompanies.AddRange(_repo.GetBuyRequests(company)));
 
-            allBuyRequestForAllCompanies.OrderBy(br => br.userId).ThenBy(br => br.OfferPerStock);
+            allBuyRequestForAllCompanies = allBuyRequestForAllCompanies.OrderBy(br => br.userId).ThenBy(br => br.OfferPerStock).ToList();
 
 
             int i = 0;

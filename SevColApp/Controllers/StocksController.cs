@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using SevColApp.Helpers;
 using SevColApp.Models;
 using SevColApp.Repositories;
+using System.Linq;
 
 namespace SevColApp.Controllers
 {
@@ -102,18 +103,45 @@ namespace SevColApp.Controllers
                 return RedirectToAction("Login", "Home");
             }
 
-            var id = _cookieHelper.GetUserIdFromCookie();
+            var userId = _cookieHelper.GetUserIdFromCookie();
 
-            var userStocks = _repo.GetStocksFromUser(id);
+            var userStocks = _repo.GetStocksFromUser(userId);
 
-            return View("SellRequest", userStocks);
+            var input = new SellRequestInputOutput
+            {
+                UsersCurrentStocks = userStocks,
+                BankAccounts = _repo.GetBankAccountsFromUser(userId),
+                SellRequest = new StockExchangeSellRequest { userId = userId }
+            };
+
+            return View("SellRequest", input);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult SellRequest(StockExchangeSellRequest request)
+        public IActionResult SellRequest(SellRequestInputOutput request)
         {
-            var answer = _repo.AddSellRequest(request);
+            StockExchangeSellRequest answer;
+
+            if (!_cookieHelper.IsThereACookie())
+            {
+                return RedirectToAction("Login", "Home");
+            }
+
+            var userId = _cookieHelper.GetUserIdFromCookie();
+
+            var possibleBankAccounts = _repo.GetBankAccountsFromUser(userId);
+
+            if (possibleBankAccounts.Any(ba => ba.AccountNumber == request.SellRequest.AccountNumber))
+            {
+                answer = _repo.AddSellRequest(request.SellRequest);
+            }
+            else
+            {
+                answer = request.SellRequest;
+
+                answer.Errors.Add($"The account number {request.SellRequest.AccountNumber} is not registered for this user or does not exist.");
+            }            
             
             return View("BuyRequestResults", answer);
         }

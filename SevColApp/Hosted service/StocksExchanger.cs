@@ -13,10 +13,12 @@ namespace SevColApp.Hosted_service
     {
         private readonly ILogger<SevColContext> _logger;
         private readonly IStocksRepository _repo;
-        public StocksExchanger(ILogger<SevColContext> logger, IStocksRepository repo)
+        private readonly IBankRepository _bankRepo;
+        public StocksExchanger(ILogger<SevColContext> logger, IStocksRepository repo, IBankRepository bankRepo)
         {
             _logger = logger;
             _repo = repo;
+            _bankRepo = bankRepo;
         }
 
         public void ExchangeStocksForCompany(Company company, DateTime time)
@@ -91,42 +93,63 @@ namespace SevColApp.Hosted_service
                 {
                     stocksExchanged = currentOffer.NumberOfStocks;
 
-                    exchange.NumberOfStocks = stocksExchanged;
+                    if(PayingAccountHasEnoughMoney(currentBuy.AccountNumber, stocksExchanged * price))
+                    {
+                        exchange.NumberOfStocks = stocksExchanged;
 
-                    sellIndex++;
-                    buyIndex++;
+                        sellIndex++;
+                        buyIndex++;
 
-                    _repo.RemoveSellRequest(currentOffer);
-                    _repo.RemoveBuyRequest(currentBuy);
+                        _repo.RemoveSellRequest(currentOffer);
+                        _repo.RemoveBuyRequest(currentBuy);
+                    }
+                    else
+                    {
+                        _repo.RemoveBuyRequest(currentBuy);
+                    }                    
                 }
                 else if (currentOffer.NumberOfStocks > currentBuy.NumberOfStocks)
                 {
                     stocksExchanged = currentBuy.NumberOfStocks;
 
-                    exchange.NumberOfStocks = stocksExchanged;
+                    if (PayingAccountHasEnoughMoney(currentBuy.AccountNumber, stocksExchanged * price))
+                    {
+                        exchange.NumberOfStocks = stocksExchanged;
 
-                    currentOffer.NumberOfStocks -= stocksExchanged;
+                        currentOffer.NumberOfStocks -= stocksExchanged;
 
-                    buyIndex++;
+                        buyIndex++;
 
-                    _repo.UpdateSellRequest(currentOffer);
-                    _repo.RemoveBuyRequest(currentBuy);
+                        _repo.UpdateSellRequest(currentOffer);
+                        _repo.RemoveBuyRequest(currentBuy);
+                    }
+                    else
+                    {
+                        _repo.RemoveBuyRequest(currentBuy);
+                    }                        
                 }
                 else
                 {
                     stocksExchanged = currentOffer.NumberOfStocks;
 
-                    exchange.NumberOfStocks = stocksExchanged;
+                    if (PayingAccountHasEnoughMoney(currentBuy.AccountNumber, stocksExchanged * price))
+                    {
+                        exchange.NumberOfStocks = stocksExchanged;
 
-                    currentBuy.NumberOfStocks -= stocksExchanged;
+                        currentBuy.NumberOfStocks -= stocksExchanged;
 
-                    sellIndex++;
+                        sellIndex++;
 
-                    _repo.RemoveSellRequest(currentOffer);
-                    _repo.UpdateBuyRequest(currentBuy);
+                        _repo.RemoveSellRequest(currentOffer);
+                        _repo.UpdateBuyRequest(currentBuy);
+                    }
+                    else
+                    {
+                        _repo.RemoveBuyRequest(currentBuy);
+                    }                        
                 }
 
-                _repo.ArrangePayment(currentBuy.userId, currentOffer.userId, stocksExchanged * price);
+                _repo.ArrangePayment(currentBuy.AccountNumber, currentOffer.AccountNumber, stocksExchanged * price);
 
                 _repo.TransferStocks(currentBuy.userId, currentOffer.userId, company.Id, stocksExchanged);
 
@@ -139,5 +162,10 @@ namespace SevColApp.Hosted_service
 
             return numberSold;
         } 
+
+        private bool PayingAccountHasEnoughMoney(string payingAccountNumber, uint priceToPay)
+        {
+            return _bankRepo.GetBankAccountByAccountNumber(payingAccountNumber).Credit >= priceToPay;
+        }            
     }
 }

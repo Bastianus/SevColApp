@@ -58,7 +58,18 @@ namespace SevColApp.Context
                 );
 
             modelBuilder.Entity<Company>().HasData(
-                new Company { Id = 1, Name = "TestCompany"}
+                new Company { Id = 1, Name = "Endeavour"},
+                new Company { Id = 2, Name = "Evol" },
+                new Company { Id = 3, Name = "In-Gentriment" },
+                new Company { Id = 4, Name = "OCP" },
+                new Company { Id = 5, Name = "UAC" },
+                new Company { Id = 6, Name = "Phalanx" },
+                new Company { Id = 7, Name = "PMC" },
+                new Company { Id = 8, Name = "Wendall's Guards" },
+                new Company { Id = 9, Name = "Hand of Eranon" },
+                new Company { Id = 10, Name = "Hypercity Trading Company" },
+                new Company { Id = 11, Name = "WEAK" },
+                new Company { Id = 12, Name = "New Luna Jones" }
                 );
 
             modelBuilder.Entity<User>().HasData(

@@ -44,7 +44,6 @@ namespace SevColApp.Repositories
             if (!CompanyExists(request.CompanyName)) request.Errors.Add($"The company {request.CompanyName} does not exist.");
             else if (!UserHasEnoughStocksFromCompany(request.CompanyName, request.NumberOfStocks)) request.Errors.Add($"You do not have enough stocks from {request.CompanyName}.");
 
-            if (UserHasNoBankAccount(request.userId)) request.Errors.Add($"You need a bank account.");
 
             if(request.Errors.Count == 0)
             {
@@ -110,32 +109,21 @@ namespace SevColApp.Repositories
             }
         }
 
-        public void ArrangePayment(int buyerId, int sellerId, long priceToPay)
+        public void ArrangePayment(string buyerAccountNumber, string sellerAccountNumber, long priceToPay)
         {
-            var receivingAccount = _context.BankAccounts.Where(ba => ba.userId == sellerId).OrderByDescending(ba => ba.Credit).First();
+            var receivingAccount = _context.BankAccounts.Single(ba => ba.AccountNumber == sellerAccountNumber);
 
-            var accountWithMostMoney = _context.BankAccounts.Where(ba => ba.userId == buyerId).OrderByDescending(ba => ba.Credit).First();
+            var payingAccount = _context.BankAccounts.Single(ba => ba.AccountNumber == buyerAccountNumber);
 
-            if (accountWithMostMoney.Credit < priceToPay)
+            if (payingAccount.Credit < priceToPay)
             {
-                priceToPay -= accountWithMostMoney.Credit;
-
-                receivingAccount.Credit += accountWithMostMoney.Credit;
-
-                accountWithMostMoney.Credit = 0;
-
-                _context.BankAccounts.Update(accountWithMostMoney);
-                _context.BankAccounts.Update(receivingAccount);
-
-                _context.SaveChanges();
-
-                ArrangePayment(buyerId, sellerId, priceToPay);
+                throw new Exception($"Bank account {payingAccount} does not have the required {priceToPay} credits.");
             }
 
-            accountWithMostMoney.Credit -= priceToPay;
+            payingAccount.Credit -= priceToPay;
             receivingAccount.Credit += priceToPay;
 
-            _context.BankAccounts.Update(accountWithMostMoney);
+            _context.BankAccounts.Update(payingAccount);
             _context.BankAccounts.Update(receivingAccount);
         }
 
@@ -174,10 +162,10 @@ namespace SevColApp.Repositories
 
                 var userStocksInCompany = userStocksInCompanyBought - userStocksInCompanySold;
 
-                answer.UserStocks.Add(new UserStocks { Company = company, NumberofStocks = userStocksInCompany });                
+                if(userStocksInCompany > 0) answer.UserStocks.Add(new UserStocks { Company = company, NumberofStocks = userStocksInCompany });
             }
 
-            answer.UserStocks.OrderByDescending(us => us.NumberofStocks).ThenBy(us => us.Company.Name);
+            answer.UserStocks = answer.UserStocks.OrderByDescending(us => us.NumberofStocks).ThenBy(us => us.Company.Name).ToList();
 
             return answer;
         }
