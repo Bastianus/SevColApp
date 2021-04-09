@@ -210,6 +210,22 @@ namespace SevColApp.Repositories
             return answer;
         }
 
+        public Company AddCompany(string companyName)
+        {
+            var company = _context.Companies.FirstOrDefault(c => c.Name == companyName);
+
+            if(company == null)
+            {
+                _context.Companies.Add(new Company { Name = companyName });
+
+                _context.SaveChanges();
+
+                company = _context.Companies.First(c => c.Name == companyName);
+            }
+
+            return company;
+        }
+
         private User GetUserByUsername(string userName)
         {
             return _context.Users.Where(x => x.LoginName == userName).FirstOrDefault();

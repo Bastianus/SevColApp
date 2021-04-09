@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SevColApp.Context;
 
 namespace SevColApp.Migrations
 {
     [DbContext(typeof(SevColContext))]
-    partial class SevColContextModelSnapshot : ModelSnapshot
+    [Migration("20210401140938_test-company")]
+    partial class testcompany
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -250,73 +252,7 @@ namespace SevColApp.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Endeavour",
-                            NumberOfStocks = 0
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Evol",
-                            NumberOfStocks = 0
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "In-Gentriment",
-                            NumberOfStocks = 0
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "OCP",
-                            NumberOfStocks = 0
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "UAC",
-                            NumberOfStocks = 0
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Name = "Phalanx",
-                            NumberOfStocks = 0
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Name = "PMC",
-                            NumberOfStocks = 0
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Name = "Wendall's Guards",
-                            NumberOfStocks = 0
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Name = "Hand of Eranon",
-                            NumberOfStocks = 0
-                        },
-                        new
-                        {
-                            Id = 10,
-                            Name = "Hypercity Trading Company",
-                            NumberOfStocks = 0
-                        },
-                        new
-                        {
-                            Id = 11,
-                            Name = "WEAK",
-                            NumberOfStocks = 0
-                        },
-                        new
-                        {
-                            Id = 12,
-                            Name = "New Luna Jones",
+                            Name = "TestCompany",
                             NumberOfStocks = 0
                         });
                 });
@@ -327,9 +263,6 @@ namespace SevColApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("AccountNumber")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("NumberOfStocks")
                         .HasColumnType("bigint");
@@ -394,9 +327,6 @@ namespace SevColApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("AccountNumber")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("MinimumPerStock")
                         .HasColumnType("bigint");

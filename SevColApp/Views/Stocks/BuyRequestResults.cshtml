@@ -1,0 +1,30 @@
+﻿@model SevColApp.Models.StockExchangeBuyRequest
+
+@{
+    ViewData["Title"] = "Buy request input Page";
+}
+<html>
+
+<body class="bankingpage">
+    @if (Model.Errors.Count > 0)
+    {
+        @foreach (var error in Model.Errors)
+        {
+            <h5 class="text-warning">@error</h5>
+        }
+    }
+    @if (Model.Errors.Count == 0)
+    {
+        <h5 class="bankingtext">Buy request submitted for @Model.NumberOfStocks stocks for @Model.CompanyName at @Model.OfferPerStock credits each.</h5>
+    }
+
+    <a asp-area="" asp-controller="Stocks" asp-action="Index" class="btn btn-light">Back to stocks</a>
+
+    <a asp-area="" asp-controller="Stocks" asp-action="BuyRequest" class="btn btn-light">Make another buy request</a>
+
+    <div id='under-construction'>
+        <div id='frame'></div>
+    </div>
+
+</body>
+</html>

@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using SevColApp.Context;
 using SevColApp.Helpers;
+using SevColApp.Hosted_service;
 using SevColApp.Repositories;
 
 namespace SevColApp
@@ -27,6 +28,9 @@ namespace SevColApp
             services.AddScoped<IHomeRepository, HomeRepository>();
             services.AddScoped<IBankRepository, BankRepository>();
             services.AddScoped<IGamemasterRepository, GamemasterRepository>();
+            services.AddScoped<IStocksRepository, StocksRepository>();
+            services.AddScoped<IStocksExchanger, StocksExchanger>();
+            services.AddScoped<IStockInputChecker, StockInputChecker>();
             services.AddScoped<CookieHelper>();
 
             services.AddDbContext<SevColContext>(options =>

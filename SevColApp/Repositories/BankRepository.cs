@@ -76,7 +76,7 @@ namespace SevColApp.Repositories
 
         public List<string> GetAllBankNames()
         {
-            var allBankNames =  _context.Banks.Select(x => x.Name).ToList();
+            var allBankNames = _context.Banks.Select(x => x.Name).ToList();
 
             return allBankNames;
         }
@@ -118,11 +118,11 @@ namespace SevColApp.Repositories
 
         public Transfer ExecuteTransfer(Transfer transfer)
         {
+            transfer.Errors = new List<string>();
 
             try
             {
-                using var scope = new TransactionScope();
-
+                CheckBankAccounts(transfer);
                 RemoveAmountFromPayer(transfer);
                 AddAmountToReceiver(transfer);
 
@@ -131,7 +131,6 @@ namespace SevColApp.Repositories
 
                 _context.SaveChanges();
 
-                scope.Complete();
             }
             catch (TransactionAbortedException ex)
             {
@@ -143,9 +142,16 @@ namespace SevColApp.Repositories
             return transfer;
         }
 
+        public BankAccount GetBankAccountByAccountNumber(string accountNumber)
+        {
+            return _context.BankAccounts.SingleOrDefault(ba => ba.AccountNumber == accountNumber);
+        }
+
         public bool IsAccountPasswordCorrect(string accountNumber, string password)
         {
             var account = _context.BankAccounts.Where(x => x.AccountNumber == accountNumber).FirstOrDefault();
+
+            if (account == null) return false;
 
             return PasswordHelper.PasswordCheck(password, account.PasswordHash);
         }
@@ -160,11 +166,11 @@ namespace SevColApp.Repositories
             {
                 generatedAccountNumber = CreateAbbreviationLettersForBankColony(bank);
 
-                generatedAccountNumber += CreditHelper.GenerateRandomNumber(generator, 1, 99).ToString();
+                generatedAccountNumber += CreditHelper.GenerateRandomNumber(generator, 10, 99).ToString();
 
                 generatedAccountNumber += bank.Abbreviation;
 
-                generatedAccountNumber += CreditHelper.GenerateRandomNumber(generator, 1, 999999);
+                generatedAccountNumber += CreditHelper.GenerateRandomNumber(generator, 100000, 999999);
             }
             while (_context.BankAccounts.Any(x => x.AccountNumber == generatedAccountNumber));
 
@@ -174,6 +180,11 @@ namespace SevColApp.Repositories
         private Bank GetBankByBankName(string bankName)
         {
             var bank = _context.Banks.Where(x => x.Name == bankName).FirstOrDefault();
+
+            if (bank == null) // bank name is not known
+            {
+                bank = _context.Banks.First();
+            }
 
             return bank;
         }
@@ -195,9 +206,16 @@ namespace SevColApp.Repositories
             };
         }
 
+        private void CheckBankAccounts(Transfer transfer)
+        {
+            if (_context.BankAccounts.Where(x => x.AccountNumber == transfer.PayingAccountNumber).FirstOrDefault() == null) throw new TransactionAbortedException("No such account exists");
+
+            if(_context.BankAccounts.Where(x => x.AccountNumber == transfer.ReceivingAccountNumber).FirstOrDefault() == null) throw new TransactionAbortedException("No such account exists");
+        }
+
         private void RemoveAmountFromPayer(Transfer transfer)
         {
-            var payingAccount = _context.BankAccounts.Where(x => x.AccountNumber == transfer.PayingAccountNumber).FirstOrDefault() ?? throw new TransactionAbortedException("No such account exists");
+            var payingAccount = _context.BankAccounts.Where(x => x.AccountNumber == transfer.PayingAccountNumber).First();
 
             if (transfer.Amount > payingAccount.Credit) throw new TransactionAbortedException("Not enough money on paying account");
 
@@ -206,7 +224,7 @@ namespace SevColApp.Repositories
 
         private void AddAmountToReceiver(Transfer transfer)
         {
-            var receivingAccount = _context.BankAccounts.Where(x => x.AccountNumber == transfer.ReceivingAccountNumber).FirstOrDefault() ?? throw new TransactionAbortedException("No such account exists");
+            var receivingAccount = _context.BankAccounts.Where(x => x.AccountNumber == transfer.ReceivingAccountNumber).First();
 
             receivingAccount.Credit += transfer.Amount;
         }

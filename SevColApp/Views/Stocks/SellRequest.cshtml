@@ -1,0 +1,80 @@
+﻿@model SevColApp.Models.SellRequestInputOutput
+
+@{
+    ViewData["Title"] = "Buy request input Page";
+}
+<html>
+
+<body class="bankingpage">
+
+    @if (Model.UsersCurrentStocks == null || Model.UsersCurrentStocks.UserStocks == null || Model.UsersCurrentStocks.UserStocks.Count == 0)
+    {
+        <h5 class="bankingtext">You do not currently have any stocks to sell</h5>
+    }
+
+    @if (Model.UsersCurrentStocks.UserStocks.Count > 0)
+    {
+        <form asp-action="SellRequest">
+
+            <table class="table table-borderless ">
+
+                <tr>
+                    <th class="bankingtext">Company:</th>
+                    <td class="input-group float-left form-input">
+                        <select asp-for="SellRequest.CompanyName" class="custom-select">
+                            <option selected>Choose the desired company</option>
+                            @foreach (var ding in @Model.UsersCurrentStocks.UserStocks)
+                            {
+                                <option>@ding.Company.Name</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th class="bankingtext">Number of stocks:</th>
+                    <td>
+                        <input asp-for="SellRequest.NumberOfStocks" min="0" class="form-control form-input float-left" />
+                        <span asp-validation-for="SellRequest.NumberOfStocks" class="text-danger"></span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th class="bankingtext">Credits reserve per stock:</th>
+                    <td>
+                        <input asp-for="SellRequest.MinimumPerStock" min="0" class="form-control form-input float-left" />
+                        <span asp-validation-for="SellRequest.MinimumPerStock" class="text-danger"></span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th class="bankingtext">Use bank account:</th>
+                    <td class="input-group float-left form-input">
+                        <select asp-for="SellRequest.AccountNumber" class="custom-select">
+                            <option selected>Choose the desired bank account</option>
+                            @foreach (var bankAccount in @Model.BankAccounts)
+                            {
+                                <option>@bankAccount.AccountNumber</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+
+                <tr class="form-group">
+                    <th></th>
+                    <td>
+                        <input type="submit" value="Create" class="btn btn-light" />
+                    </td>
+                </tr>
+
+            </table>
+
+        </form>
+    }
+
+    <div id='under-construction'>
+        <div id='frame'></div>
+    </div>
+
+</body>
+</html>

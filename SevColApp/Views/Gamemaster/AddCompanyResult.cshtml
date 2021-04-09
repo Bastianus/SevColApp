@@ -1,0 +1,22 @@
+﻿@model SevColApp.Models.Company
+
+@{
+    ViewData["Title"] = "Result of add company";
+}
+
+<html>
+<body class="gmpage">
+
+    @if (Model.IsNew)
+    {
+        <h5>The company @Model.Name has been added and given the id @Model.Id.</h5>
+    }
+    @if (!Model.IsNew)
+    {
+        <h5>The company @Model.Name already existed.</h5>
+    }
+
+    <a asp-area="" asp-controller="Gamemaster" asp-action="Index" class="btn btn-info">Back to game master page</a>
+
+</body>
+</html>

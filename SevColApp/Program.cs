@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using SevColApp.Hosted_service;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -25,6 +27,11 @@ namespace SevColApp
                     webBuilder.UseContentRoot(Directory.GetCurrentDirectory());
                     webBuilder.UseIISIntegration();
                     webBuilder.UseStartup<Startup>();
-                });
+                })
+                .ConfigureServices(services =>
+               {
+                   services.AddHostedService<StockExchangeService>();
+                   services.AddScoped<IStockExchange, StockExchange>();
+               });
     }
 }

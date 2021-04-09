@@ -22,6 +22,8 @@ namespace SevColApp.Controllers
             _userRepo = userRepo;
             _repo = repo;
             _cookieHelper = cookieHelper;
+
+            _logger.LogInformation("Bank repository started");
         }
 
         public IActionResult Index()

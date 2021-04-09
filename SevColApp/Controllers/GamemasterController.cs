@@ -166,5 +166,24 @@ namespace SevColApp.Controllers
 
             return View("EditBankAccountResult", answer);
         }
+
+        public IActionResult AddCompany()
+        {
+            if (!_cookieHelper.IsThereAGameMasterCookie())
+            {
+                return RedirectToAction("Login", "Home");
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddCompany(Company company)
+        {
+            var answer = _repo.AddCompany(company.Name);
+
+            return View("AddCompanyResult", answer);
+        }
     }
 }
