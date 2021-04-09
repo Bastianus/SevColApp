@@ -21,6 +21,11 @@ namespace SevColApp.Repositories
             return _context.Companies.ToList();
         }
 
+        public Company GetCompanyByName(string companyName)
+        {
+            return _context.Companies.FirstOrDefault(company => company.Name == companyName);
+        }
+
         public StockExchangeBuyRequest AddBuyRequest(StockExchangeBuyRequest request)
         {
             if (request.NumberOfStocks < 1) request.Errors.Add($"The number of stocks requested ({request.NumberOfStocks}) has to be greater than zero.");
@@ -150,20 +155,11 @@ namespace SevColApp.Repositories
             _context.StockExchangesCompleted.Add(exchange);
         }
 
-        public UsersCurrentStocks GetStocksFromUser(int id)
+        public UsersCurrentStocks GetStocksFromUser(int userId)
         {
             var answer = new UsersCurrentStocks();
 
-            foreach(var company in _context.Companies)
-            {
-                var userStocksInCompanyBought = _context.StockExchangesCompleted.Where(sec => sec.companyId == company.Id && sec.buyerId == id).Sum(sec => sec.NumberOfStocks);
-
-                var userStocksInCompanySold = _context.StockExchangesCompleted.Where(sec => sec.companyId == company.Id && sec.sellerId == id).Sum(sec => sec.NumberOfStocks);
-
-                var userStocksInCompany = userStocksInCompanyBought - userStocksInCompanySold;
-
-                if(userStocksInCompany > 0) answer.UserStocks.Add(new UserStocks { Company = company, NumberofStocks = userStocksInCompany });
-            }
+            answer.UserStocks.AddRange(_context.UserCompanyStocks.Where(ucs => ucs.userId == userId).Select(ucs => new UserStocks { Company = ucs.Company, NumberofStocks = ucs.NumberOfStocks }));
 
             answer.UserStocks = answer.UserStocks.OrderByDescending(us => us.NumberofStocks).ThenBy(us => us.Company.Name).ToList();
 

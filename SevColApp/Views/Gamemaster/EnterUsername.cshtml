@@ -1,27 +1,36 @@
-﻿@model SevColApp.Models.User
-
+﻿@model SevColApp.Models.EnterUserInputOutput
 @{
     ViewData["Title"] = "Enter username to check all accounts of user";
 }
 
 <html>
 <body class="gmpage">
+
     <form asp-action="EnterUserName">
+
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <table class="table table-borderless table-sm">
+
             <tr>
                 <th class="text-right"><label>User's login name:</label></th>
-                <td>
-                    <input asp-for="LoginName" class="form-control col-6" />
-                    <span asp-validation-for="LoginName" class="text-danger"></span>
+                <td class="input-group float-left form-input">
+                    <select asp-for="UserLoginName" class="custom-select">
+                        <option selected>Choose the user by login name:</option>
+                        @foreach (var userLoginName in @Model.AllUsersLoginNames)
+                        {
+                            <option>@userLoginName</option>
+                        }
+                    </select>
                 </td>
             </tr>
+
             <tr class="form-group">
                 <th></th>
                 <td>
                     <input type="submit" class="btn btn-dark" />
                 </td>
             </tr>
+
         </table>
     </form>
 </body>

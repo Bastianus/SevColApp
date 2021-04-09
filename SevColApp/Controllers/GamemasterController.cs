@@ -5,6 +5,7 @@ using SevColApp.Helpers;
 using SevColApp.Models;
 using SevColApp.Repositories;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SevColApp.Controllers
 {
@@ -12,12 +13,14 @@ namespace SevColApp.Controllers
     {
         private readonly ILogger<GamemasterController> _logger;
         private readonly IGamemasterRepository _repo;
+        private readonly IStocksRepository _stocksRepo;
         private readonly CookieHelper _cookieHelper;
 
-        public GamemasterController(ILogger<GamemasterController> logger, IGamemasterRepository repo, CookieHelper cookieHelper)
+        public GamemasterController(ILogger<GamemasterController> logger, IGamemasterRepository repo, IStocksRepository stocksRepo, CookieHelper cookieHelper)
         {
             _logger = logger;
             _repo = repo;
+            _stocksRepo = stocksRepo;
             _cookieHelper = cookieHelper;
         }
 
@@ -74,19 +77,19 @@ namespace SevColApp.Controllers
                 return RedirectToAction("Login", "Home");
             }
 
-            if (!_cookieHelper.IsThereAGameMasterCookie())
+            var input = new EnterUserInputOutput
             {
-                return RedirectToAction("Login", "Home");
-            }
+                AllUsersLoginNames = _repo.GetAllUsers().Select(user => user.LoginName).ToList()
+            };
 
-            return View();
+            return View(input);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult EnterUserName(User user)
+        public IActionResult EnterUserName(EnterUserInputOutput output)
         {
-            var answer = _repo.GetAllAccountsOfUser(user.LoginName);
+            var answer = _repo.GetAllAccountsOfUser(output.UserLoginName);
 
             return View("UserBankAccounts", answer);
         }
@@ -184,6 +187,53 @@ namespace SevColApp.Controllers
             var answer = _repo.AddCompany(company.Name);
 
             return View("AddCompanyResult", answer);
+        }
+
+        public IActionResult AddStocksForUser()
+        {
+            if (!_cookieHelper.IsThereAGameMasterCookie())
+            {
+                return RedirectToAction("Login", "Home");
+            }
+
+            var input = new AddStocksInputOutput
+            {
+                Companies = _stocksRepo.GetAllCompanies(),
+                Users = _repo.GetAllUsers(),
+                UserCompanyStocks = new UserCompanyStocks()
+            };
+
+            return View(input);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddStocksForUser(AddStocksInputOutput output)
+        {
+            output.Errors = new List<string>();
+
+            var user = _repo.GetUserByLoginName(output.UserCompanyStocks.User.LoginName);
+
+            var company = _stocksRepo.GetCompanyByName(output.UserCompanyStocks.Company.Name);
+
+            if (user == null) output.Errors.Add($"No user was found with the login name \"{output.UserCompanyStocks.User.LoginName}\"");
+
+            if (company == null) output.Errors.Add($"No company was found with the name \"{output.UserCompanyStocks.Company.Name}\"");
+
+            if (output.NumberOfStocks == 0) output.Errors.Add($"A zero stocks change is pointless.");
+
+            if(output.Errors.Count == 0)
+            {
+                output.UserCompanyStocks.Company = company;
+                output.UserCompanyStocks.User = user;
+
+                output.UserCompanyStocks.companyId = company.Id;
+                output.UserCompanyStocks.userId = user.Id;
+
+                output = _repo.AddStocksForUser(output);
+            }
+
+            return View("AddStocksForUserResult", output);
         }
     }
 }

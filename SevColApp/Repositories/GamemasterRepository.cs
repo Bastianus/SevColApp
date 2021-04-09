@@ -24,16 +24,16 @@ namespace SevColApp.Repositories
             return  _context.Users.Where(x => x.Id != _cookieHelper.GetGameMasterId()).ToList();
         }
 
-        public UserAccountsAnswer GetAllAccountsOfUser(string userName)
+        public UserAccountsAnswer GetAllAccountsOfUser(string loginName)
         {
             var answer = new UserAccountsAnswer
             {
-                User = GetUserByUsername(userName)
+                User = GetUserByLoginName(loginName)
             };
 
             if (answer.User == null)
             {
-                answer.Error = $"No user with login name \"{userName}\" was found.";
+                answer.Error = $"No user with login name \"{loginName}\" was found.";
 
                 return answer;
             }
@@ -42,7 +42,7 @@ namespace SevColApp.Repositories
 
             if (answer.Accounts.Count == 0)
             {
-                answer.Error = $"The user with login name \"{userName}\" has no known bank accounts (yet?).";
+                answer.Error = $"The user with login name \"{loginName}\" has no known bank accounts (yet?).";
             }
 
             return answer;
@@ -50,7 +50,7 @@ namespace SevColApp.Repositories
 
         public UserPasswordChange ChangeUserPassword(UserPasswordChange input)
         {
-            var user = GetUserByUsername(input.UserLoginName);
+            var user = GetUserByLoginName(input.UserLoginName);
 
             if(user == null)
             {
@@ -68,11 +68,11 @@ namespace SevColApp.Repositories
 
         public AccountPasswordChange ChangeBankAccountPassword(AccountPasswordChange input)
         {
-            var user = GetUserByUsername(input.UserName);
+            var user = GetUserByLoginName(input.LoginName);
 
             if (user == null)
             {
-                input.Error = $"User with username \"{input.UserName}\" not found.";
+                input.Error = $"User with login name \"{input.LoginName}\" not found.";
 
                 return input;
             }
@@ -226,9 +226,51 @@ namespace SevColApp.Repositories
             return company;
         }
 
-        private User GetUserByUsername(string userName)
+        public AddStocksInputOutput AddStocksForUser(AddStocksInputOutput input)
         {
-            return _context.Users.Where(x => x.LoginName == userName).FirstOrDefault();
+            var existingUserCompanyStocks = _context.UserCompanyStocks.FirstOrDefault(ucs => ucs.userId == input.UserCompanyStocks.userId && ucs.companyId == input.UserCompanyStocks.companyId);
+
+            if (existingUserCompanyStocks == null)
+            {
+                if (input.NumberOfStocks < 1) input.Errors.Add($"The user had no stocks for {input.UserCompanyStocks.Company.Name}, so the number of stocks added cannot be negative.");
+                else
+                {
+                    input.UserCompanyStocks.NumberOfStocks = (uint)input.NumberOfStocks;
+
+                    _context.UserCompanyStocks.Add(input.UserCompanyStocks);
+                }
+
+            }
+            else if (existingUserCompanyStocks.NumberOfStocks + input.NumberOfStocks < 0) 
+            {
+                input.Errors.Add($"The user only has {existingUserCompanyStocks.NumberOfStocks} for {input.UserCompanyStocks.Company.Name}, so subtracting {-input.NumberOfStocks} stocks would result in anegative amount of stocks.");
+            } 
+            else
+            {
+                if(input.NumberOfStocks < 0)
+                {
+                    existingUserCompanyStocks.NumberOfStocks -= (uint)(-input.NumberOfStocks);
+                }
+                else
+                {
+                    existingUserCompanyStocks.NumberOfStocks += (uint)input.NumberOfStocks;
+                }                
+
+
+                if(existingUserCompanyStocks.NumberOfStocks == 0) _context.UserCompanyStocks.Remove(existingUserCompanyStocks);
+                else _context.UserCompanyStocks.Update(existingUserCompanyStocks);
+
+                input.NumberOfStocks = (int)existingUserCompanyStocks.NumberOfStocks;
+            }
+
+            _context.SaveChanges();
+
+            return input;
+        }
+
+        public User GetUserByLoginName(string loginName)
+        {
+            return _context.Users.Where(x => x.LoginName == loginName).FirstOrDefault();
         }
 
         private EditBankAccountResult TransferBetweenAccounts(BankAccount fromAccount, BankAccount toAccount, int amount, string description, EditBankAccountResult answer)

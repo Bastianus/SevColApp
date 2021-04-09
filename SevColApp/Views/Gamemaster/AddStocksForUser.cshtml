@@ -1,0 +1,61 @@
+﻿@model SevColApp.Models.AddStocksInputOutput
+
+@{
+    ViewData["Title"] = "Add stocks for a user";
+}
+
+<html>
+<body class="gmpage">
+
+    <form asp-action="AddStocksForUser">
+
+        <table class="table table-borderless ">
+
+            <tr>
+                <th>User:</th>
+                <td class="input-group float-left form-input">
+                    <select asp-for="UserCompanyStocks.User.LoginName" class="custom-select">
+                        <option selected>Choose the user</option>
+                        @foreach (var user in @Model.Users)
+                        {
+                            <option>@user.LoginName</option>
+                        }
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <th>Company:</th>
+                <td class="input-group float-left form-input">
+                    <select asp-for="UserCompanyStocks.Company.Name" class="custom-select">
+                        <option selected>Choose the desired company</option>
+                        @foreach (var company in @Model.Companies)
+                        {
+                            <option>@company.Name</option>
+                        }
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <th>Number of stocks added (or subtracted if negative):</th>
+                <td>
+                    <input asp-for="NumberOfStocks" class="form-control form-input float-left" />
+                    <span asp-validation-for="NumberOfStocks" class="text-danger"></span>
+                </td>
+            </tr>
+
+            <tr class="form-group">
+                <th></th>
+                <td>
+                    <input type="submit" value="Create" class="btn btn-light" />
+                </td>
+            </tr>
+
+        </table>
+
+    </form>
+
+
+</body>
+</html>

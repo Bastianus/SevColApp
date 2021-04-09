@@ -14,5 +14,7 @@ namespace SevColApp.Repositories
         BankAccount GetAccountByAccountNumber(string accountNumber);
         EditBankAccountResult EditBankAccount(InputOutputAccountEdit input);
         Company AddCompany(string companyName);
+        AddStocksInputOutput AddStocksForUser(AddStocksInputOutput input);
+        User GetUserByLoginName(string loginName);
     }
 }

@@ -6,6 +6,7 @@ namespace SevColApp.Repositories
     public interface IStocksRepository
     {
         List<Company> GetAllCompanies();
+        Company GetCompanyByName(string companyName);
         StockExchangeBuyRequest AddBuyRequest(StockExchangeBuyRequest request);
         StockExchangeSellRequest AddSellRequest(StockExchangeSellRequest request);
         List<StockExchangeBuyRequest> GetBuyRequests(Company company);
@@ -21,7 +22,7 @@ namespace SevColApp.Repositories
         void UpdateBuyRequest(StockExchangeBuyRequest buyRequest);
         void AddCompletedExchange(StockExchangeCompleted exchange);
         UsersCurrentStocks GetStocksFromUser(int id);
-        List<BankAccount> GetBankAccountsFromUser(int userId);
+        List<BankAccount> GetBankAccountsFromUser(int userId);        
         void Save();
     }
 }

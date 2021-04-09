@@ -1,0 +1,29 @@
+﻿@model SevColApp.Models.AddStocksInputOutput
+
+@{
+    ViewData["Title"] = "Add stocks for user results page";
+}
+
+<html>
+<body class="gmpage">
+
+    @if (Model.Errors.Count > 0)
+    {
+        foreach (var error in Model.Errors)
+        {
+            <h5 class="text-danger">@error</h5>
+        }
+    }
+
+    @if (Model.Errors.Count == 0)
+    {
+        <h5>Succesfully changed the number of stocks for @Model.UserCompanyStocks.User.LoginName.</h5>
+        <h5>@Model.UserCompanyStocks.User.LoginName now has @Model.NumberOfStocks stocks for @Model.UserCompanyStocks.Company.Name.</h5>
+    }
+
+    <a asp-area="" asp-controller="Gamemaster" asp-action="AddStocksForUser" class="btn btn-outline-dark">Add stocks for a user again</a>
+
+    <a asp-area="" asp-controller="Gamemaster" asp-action="Index" class="btn btn-info">Back to game master page</a>
+
+</body>
+</html>
