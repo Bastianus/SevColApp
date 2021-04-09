@@ -13,5 +13,6 @@ namespace SevColApp.Repositories
         AllUsers ResetAllowances();
         BankAccount GetAccountByAccountNumber(string accountNumber);
         EditBankAccountResult EditBankAccount(InputOutputAccountEdit input);
+        Company AddCompany(string companyName);
     }
 }
