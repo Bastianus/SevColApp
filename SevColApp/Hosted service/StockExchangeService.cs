@@ -48,19 +48,6 @@ namespace SevColApp.Hosted_service
             _logger.LogInformation($"Stock excahnge service is stopping at {DateTime.Now}.");
 
             await base.StopAsync(stoppingToken);
-        }
-
-        //private async Task WaitForHourDevisibleByThree(CancellationToken stoppingToken)
-        //{
-        //    var now = DateTime.Now;
-
-        //    var hoursToWait = 3 - now.Hour % 3;
-
-        //    var minutesToWait = hoursToWait * 60 - now.Minute;
-
-        //    _logger.LogInformation($"Stock exchange service waiting for {minutesToWait} minutes.");
-
-        //    await Task.Delay(TimeSpan.FromMinutes(minutesToWait), stoppingToken);
-        //}        
+        }    
     }
 }

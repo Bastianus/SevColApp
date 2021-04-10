@@ -45,15 +45,10 @@ namespace SevColApp.Hosted_service
 
                 _stocksExchanger.RemoveAllRemainingRequests();
 
-                await _timeHelper.WaitUntilNextThreeHours(_logger, token);
+                _logger.LogInformation("Stock exchanger completed its task");
+
+                await _timeHelper.WaitForHourDevisibleByThree(_logger, token);
             }
         }
-
-        //private async Task WaitThreeHours(CancellationToken stoppingToken)
-        //{
-        //    _logger.LogInformation($"Stock exchange service completed, waiting for 180 minutes.");
-
-        //    await Task.Delay(TimeSpan.FromMinutes(180), stoppingToken);
-        //}
     }
 }

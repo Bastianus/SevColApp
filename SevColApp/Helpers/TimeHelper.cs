@@ -7,15 +7,6 @@ namespace SevColApp.Helpers
 {
     public class TimeHelper
     {
-        public async Task WaitUntilNextThreeHours(ILogger logger, CancellationToken cancellationToken)
-        {
-            logger.LogInformation($"Stock exchange service completed");
-
-            await Task.Delay(TimeSpan.FromMinutes(1), cancellationToken); //wait a minute to be sure you won't end up waiting no time
-
-            await WaitForHourDevisibleByThree(logger, cancellationToken);
-        }
-
         public async Task WaitForHourDevisibleByThree(ILogger logger, CancellationToken cancellationToken)
         {
             var now = DateTime.Now;
@@ -24,9 +15,11 @@ namespace SevColApp.Helpers
 
             var minutesToWait = hoursToWait * 60 - now.Minute;
 
-            logger.LogInformation($"Stock exchange service waiting for {minutesToWait} minutes.");
+            var secondsToWait = minutesToWait * 60 - now.Second;
 
-            await Task.Delay(TimeSpan.FromMinutes(minutesToWait), cancellationToken);
+            logger.LogInformation($"Stock exchange service waiting for {hoursToWait - 1} hours, {minutesToWait - 1 - (hoursToWait -1) * 60} minutes, and {secondsToWait - (minutesToWait - 1) * 60} seconds.");
+
+            await Task.Delay(TimeSpan.FromSeconds(secondsToWait), cancellationToken);
         }
     }
 }
