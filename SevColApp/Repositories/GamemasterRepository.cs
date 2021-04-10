@@ -24,6 +24,24 @@ namespace SevColApp.Repositories
             return  _context.Users.Where(x => x.Id != _cookieHelper.GetGameMasterId()).ToList();
         }
 
+        public List<UserWithExtraData> GetAllUsersWithExtraData()
+        {
+            var answer = new List<UserWithExtraData>();
+
+            var allUsers = GetAllUsers();
+
+            foreach(var user in allUsers)
+            {
+                var usersWealth = _context.BankAccounts.Where(ba => ba.userId == user.Id).Sum(ba => ba.Credit);
+
+                var usersStocks = _context.UserCompanyStocks.Where(ucs => ucs.userId == user.Id).Sum(ucs => ucs.NumberOfStocks);
+
+                answer.Add(new UserWithExtraData { User = user, TotalWealth = usersWealth, TotalNumberOfStocks = usersStocks });
+            }
+
+            return answer;
+        }
+
         public UserAccountsAnswer GetAllAccountsOfUser(string loginName)
         {
             var answer = new UserAccountsAnswer
@@ -93,44 +111,45 @@ namespace SevColApp.Repositories
             return input;
         }
 
-        public AllUsers PayAllowanceForUser(string userLoginName)
+        public List<UserWithExtraData> PayAllowanceForUser(string userLoginName)
         {
-            var allUsers = GetAllUsers();
+            var allUsers = GetAllUsersWithExtraData();
 
-            var rightUser = allUsers.Where(x => x.LoginName == userLoginName).FirstOrDefault();
+            var rightUser = allUsers.Where(x => x.User.LoginName == userLoginName).FirstOrDefault();
 
-            var bankAccountsOfUser = _context.BankAccounts.Where(account => account.userId == rightUser.Id).ToList();
+            var bankAccountsOfUser = _context.BankAccounts.Where(account => account.userId == rightUser.User.Id).ToList();
 
-            if (rightUser.AllowanceStatus == "Paid" || rightUser.AllowanceStatus == "Already paid")
+            if (rightUser.User.AllowanceStatus == "Paid" || rightUser.User.AllowanceStatus == "Already paid")
             {
-                rightUser.AllowanceStatus = "Already paid";
+                rightUser.User.AllowanceStatus = "Already paid";
             }
             else if(bankAccountsOfUser.Count > 0)
             {
                 bankAccountsOfUser.ForEach(account => account.Credit += account.ExpectedIncome);                
 
-                rightUser.AllowanceStatus = "Paid";
+                rightUser.User.AllowanceStatus = "Paid";
             }
             else
             {
-                rightUser.AllowanceStatus = "No bank account";
+                rightUser.User.AllowanceStatus = "No bank account";
             }
 
             _context.SaveChanges();
 
-            return new AllUsers { Users = allUsers };
+            return allUsers;
         }
 
-        public AllUsers ResetAllowances()
+        public List<UserWithExtraData> ResetAllowances()
         {
-            var allUsers = GetAllUsers();
+            var allUsers = GetAllUsersWithExtraData();
 
-            allUsers.ForEach(user => user.AllowanceStatus = "");
+            allUsers.ForEach(user => user.User.AllowanceStatus = "");
 
             _context.SaveChanges();
 
-            return new AllUsers { Users = allUsers };
+            return allUsers;
         }
+
         public BankAccount GetAccountByAccountNumber(string accountNumber)
         {
             return _context.BankAccounts.Where(x => x.AccountNumber == accountNumber).FirstOrDefault();
@@ -271,6 +290,11 @@ namespace SevColApp.Repositories
         public User GetUserByLoginName(string loginName)
         {
             return _context.Users.Where(x => x.LoginName == loginName).FirstOrDefault();
+        }
+
+        public List<UserStocks> GetStocksForUserByLoginName(string loginName)
+        {
+            return _context.UserCompanyStocks.Where(ucs => ucs.User.LoginName == loginName).OrderBy(ucs => ucs.Company.Name).Select(ucs => new UserStocks { Company = ucs.Company, NumberofStocks = ucs.NumberOfStocks }).ToList();
         }
 
         private EditBankAccountResult TransferBetweenAccounts(BankAccount fromAccount, BankAccount toAccount, int amount, string description, EditBankAccountResult answer)

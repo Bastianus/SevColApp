@@ -1,4 +1,4 @@
-﻿@model SevColApp.Models.AllUsers
+﻿@model List<SevColApp.Models.UserWithExtraData>
 
 @{
     ViewData["Title"] = "Gamemaster's all users page";
@@ -12,20 +12,26 @@
                 <th scope="col">User id</th>
                 <th scope="col">Login name</th>
                 <th scope="col">Full name</th>
+                <th scope="col">Total wealth</th>
+                <th scope="col">Total stocks</th>
                 <th scope="col">Allowance status</th>
                 <th scope="col"></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var user in Model.Users)
+            @foreach (var user in Model)
             {
                 <tr>
-                    <th scope="row">@user.Id</th>
-                    <td>@user.LoginName</td>
-                    <td>@user.FullName</td>
-                    <td class="text-success">@user.AllowanceStatus</td>
+                    <th scope="row">@user.User.Id</th>
+                    <td>@user.User.LoginName</td>
+                    <td>@user.User.FullName</td>
+                    <td>@user.TotalWealth.ToString("N0")</td>
+                    <td>@user.TotalNumberOfStocks.ToString("N0")</td>
+                    <td class="text-success">@user.User.AllowanceStatus</td>
                     <td>
-                        <a asp-area="" asp-controller="Gamemaster" asp-action="PayUser" asp-route-userLoginName=@user.LoginName class="btn btn-info">Pay allowance</a>
+                        <a asp-area="" asp-controller="Gamemaster" asp-action="PayUser" asp-route-userLoginName=@user.User.LoginName class="btn btn-info">Pay allowance</a>
+                        <a asp-area="" asp-controller="Gamemaster" asp-action="UsersBankAccounts" asp-route-userLoginName=@user.User.LoginName class="btn btn-info">Bank accounts</a>
+                        <a asp-area="" asp-controller="Gamemaster" asp-action="ViewStocksForThisUser" asp-route-userLoginName=@user.User.LoginName class="btn btn-info">Stocks</a>
                     </td>
                 </tr>
             }

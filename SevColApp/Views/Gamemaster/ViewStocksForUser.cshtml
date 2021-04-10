@@ -1,0 +1,39 @@
+﻿@model SevColApp.Models.EnterUserInputOutput
+
+@{
+    ViewData["Title"] = "VSelect a user to see their stocks";
+} 
+
+<html>
+<body class="gmpage">
+
+    <form asp-action="ViewStocksForUser">
+        <table class="table table-borderless ">
+
+            <tr>
+                <th>User:</th>
+                <td class="input-group float-left form-input">
+                    <select asp-for="UserLoginName" class="custom-select">
+                        <option selected>Choose the user</option>
+                        @foreach (var user in @Model.AllUsersLoginNames)
+                        {
+                            <option>@user</option>
+                        }
+                    </select>
+                </td>
+            </tr>
+
+            <tr class="form-group">
+                <th></th>
+                <td>
+                    <input type="submit" value="Choose" class="btn btn-light" />
+                </td>
+            </tr>
+
+        </table>
+    </form>
+
+
+
+</body>
+</html>

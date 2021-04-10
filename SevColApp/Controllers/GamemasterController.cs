@@ -41,7 +41,8 @@ namespace SevColApp.Controllers
                 return RedirectToAction("Login", "Home");
             }
 
-            var answer = new AllUsers { Users = _repo.GetAllUsers() };
+            //var answer = new AllUsers { Users = _repo.GetAllUsers() };
+            var answer = _repo.GetAllUsersWithExtraData();
 
             return View(answer);
         }
@@ -83,6 +84,11 @@ namespace SevColApp.Controllers
             };
 
             return View(input);
+        }
+
+        public IActionResult UsersBankAccounts(string userLoginName)
+        {
+            return EnterUserName(new EnterUserInputOutput { UserLoginName = userLoginName });
         }
 
         [HttpPost]
@@ -156,9 +162,9 @@ namespace SevColApp.Controllers
 
             var account = _repo.GetAccountByAccountNumber(accountNumber);
 
-            var inputOutput = new InputOutputAccountEdit { Account = account, Errors = new List<string>()};
+            var inputOutput = new InputOutputAccountEdit { Account = account, Errors = new List<string>() };
 
-            return View( inputOutput );
+            return View(inputOutput);
         }
 
         [HttpPost]
@@ -222,7 +228,7 @@ namespace SevColApp.Controllers
 
             if (output.NumberOfStocks == 0) output.Errors.Add($"A zero stocks change is pointless.");
 
-            if(output.Errors.Count == 0)
+            if (output.Errors.Count == 0)
             {
                 output.UserCompanyStocks.Company = company;
                 output.UserCompanyStocks.User = user;
@@ -234,6 +240,35 @@ namespace SevColApp.Controllers
             }
 
             return View("AddStocksForUserResult", output);
+        }
+
+        public IActionResult ViewStocksForUser()
+        {
+            if (!_cookieHelper.IsThereAGameMasterCookie())
+            {
+                return RedirectToAction("Login", "Home");
+            }
+
+            var input = new EnterUserInputOutput
+            {
+                AllUsersLoginNames = _repo.GetAllUsers().Select(u => u.LoginName).ToList()
+            };
+
+            return View(input);
+        }
+
+        public IActionResult ViewStocksForThisUser(string userLoginName)
+        {
+            return ViewStocksForUser(new EnterUserInputOutput { UserLoginName = userLoginName });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ViewStocksForUser(EnterUserInputOutput output)
+        {
+            var answer = _repo.GetStocksForUserByLoginName(output.UserLoginName);
+
+            return View("ViewStocksForUserResult",answer);
         }
     }
 }

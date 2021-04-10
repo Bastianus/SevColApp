@@ -1,0 +1,22 @@
+﻿@model List<SevColApp.Models.UserStocks>
+
+@{
+    ViewData["Title"] = "Add stocks for a user";
+}
+
+<html>
+<body class="gmpage">
+
+    <h4>This user currently has the following stocks:</h4>
+
+    <ul>
+        @foreach (var stocks in @Model)
+        {
+            <li>@stocks.Company.Name : @stocks.NumberofStocks stocks.</li>
+        }
+    </ul>
+
+    <a asp-area="" asp-controller="Gamemaster" asp-action="Index" class="btn btn-info">Back to game master page</a>
+
+</body>
+</html>
