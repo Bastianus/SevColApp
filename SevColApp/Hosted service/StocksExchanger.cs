@@ -49,6 +49,11 @@ namespace SevColApp.Hosted_service
             }
         }
 
+        public void RemoveAllRemainingRequests()
+        {
+            _repo.RemoveAllRemainingRequests();
+        }
+
         private uint SellStocksByBatch(List<StockExchangeSellRequest> offers, List<StockExchangeBuyRequest> buys, Company company, DateTime time)
         {
             var amountPayedPerStock = StocksHelper.CalculateAmountPaidPerStock(offers, buys);

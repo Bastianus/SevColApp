@@ -171,6 +171,14 @@ namespace SevColApp.Repositories
             return _context.BankAccounts.Where(ba => ba.userId == userId).OrderByDescending(ba => ba.Credit).ToList();
         }
 
+        public void RemoveAllRemainingRequests()
+        {
+            _context.StockExchangeBuyRequests.RemoveRange(_context.StockExchangeBuyRequests.ToList());
+            _context.StockExchangeSellRequests.RemoveRange(_context.StockExchangeSellRequests.ToList());
+
+            _context.SaveChanges();
+        }
+
         public void Save()
         {
             _context.SaveChanges();

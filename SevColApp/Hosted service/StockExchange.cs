@@ -42,7 +42,9 @@ namespace SevColApp.Hosted_service
                     _stocksExchanger.ExchangeStocksForCompany(company, startTime);
                 }
 
-                await Task.Delay(TimeSpan.FromMinutes(15), token);
+                _stocksExchanger.RemoveAllRemainingRequests();
+
+                await Task.Delay(TimeSpan.FromMinutes(180), token);
             }
         }        
     }
