@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SevColApp.Helpers;
 using SevColApp.Models;
 using System.Linq;
-using System.Text;
 
 namespace SevColApp.Context
 {
