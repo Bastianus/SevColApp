@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using SevColApp.Context;
+using SevColApp.Helpers;
 using SevColApp.Models;
 using SevColApp.Repositories;
 using System;
@@ -14,13 +15,15 @@ namespace SevColApp.Hosted_service
         private readonly IStocksRepository _repo;
         private readonly IStocksExchanger _stocksExchanger;
         private readonly IStockInputChecker _stockInputChecker;
+        private readonly TimeHelper _timeHelper;
 
-        public StockExchange(ILogger<SevColContext> logger, IStocksRepository repo, IStocksExchanger stocksExchanger, IStockInputChecker stockInputChecker)
+        public StockExchange(ILogger<SevColContext> logger, IStocksRepository repo, IStocksExchanger stocksExchanger, IStockInputChecker stockInputChecker, TimeHelper timeHelper)
         {
             _logger = logger;
             _repo = repo;
             _stocksExchanger = stocksExchanger;
             _stockInputChecker = stockInputChecker;
+            _timeHelper = timeHelper;
         }
 
         public async Task ExchangeStocks(CancellationToken token)
@@ -42,15 +45,15 @@ namespace SevColApp.Hosted_service
 
                 _stocksExchanger.RemoveAllRemainingRequests();
 
-                await WaitThreeHours(token);
+                await _timeHelper.WaitUntilNextThreeHours(_logger, token);
             }
         }
 
-        private async Task WaitThreeHours(CancellationToken stoppingToken)
-        {
-            _logger.LogInformation($"Stock exchange service completed, waiting for 180 minutes.");
+        //private async Task WaitThreeHours(CancellationToken stoppingToken)
+        //{
+        //    _logger.LogInformation($"Stock exchange service completed, waiting for 180 minutes.");
 
-            await Task.Delay(TimeSpan.FromMinutes(180), stoppingToken);
-        }
+        //    await Task.Delay(TimeSpan.FromMinutes(180), stoppingToken);
+        //}
     }
 }

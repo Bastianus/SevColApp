@@ -28,7 +28,10 @@ namespace SevColApp
             services.AddScoped<IGamemasterRepository, GamemasterRepository>();
             services.AddScoped<IStocksRepository, StocksRepository>();
             services.AddScoped<IStocksExchanger, StocksExchanger>();
-            services.AddScoped<IStockInputChecker, StockInputChecker>();
+            services.AddScoped<IStockInputChecker, StockInputChecker>();            
+            services.AddHostedService<StockExchangeService>();
+            services.AddScoped<IStockExchange, StockExchange>();
+            services.AddSingleton<TimeHelper>();
             services.AddScoped<CookieHelper>();
 
             services.AddDbContext<SevColContext>(options =>

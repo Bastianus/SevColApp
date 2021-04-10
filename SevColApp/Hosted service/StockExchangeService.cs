@@ -11,13 +11,15 @@ namespace SevColApp.Hosted_service
     public class StockExchangeService : BackgroundService
     {
         private readonly ILogger _logger;
+        private readonly TimeHelper _timeHelper;
 
         public IServiceProvider Services { get; }
 
-        public StockExchangeService(IServiceProvider services, ILogger<StockExchangeService> logger)
+        public StockExchangeService(IServiceProvider services, ILogger<StockExchangeService> logger, TimeHelper timeHelper)
         {
             Services = services;
             _logger = logger;
+            _timeHelper = timeHelper;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -35,7 +37,7 @@ namespace SevColApp.Hosted_service
             {
                 var action = scope.ServiceProvider.GetRequiredService<IStockExchange>();
 
-                await WaitForHourDevisibleByThree(stoppingToken);
+                await _timeHelper.WaitForHourDevisibleByThree(_logger, stoppingToken);
 
                 await action.ExchangeStocks(stoppingToken);                
             }
@@ -48,17 +50,17 @@ namespace SevColApp.Hosted_service
             await base.StopAsync(stoppingToken);
         }
 
-        private async Task WaitForHourDevisibleByThree(CancellationToken stoppingToken)
-        {
-            var now = DateTime.Now;
+        //private async Task WaitForHourDevisibleByThree(CancellationToken stoppingToken)
+        //{
+        //    var now = DateTime.Now;
 
-            var hoursToWait = 3 - now.Hour % 3;
+        //    var hoursToWait = 3 - now.Hour % 3;
 
-            var minutesToWait = hoursToWait * 60 - now.Minute;
+        //    var minutesToWait = hoursToWait * 60 - now.Minute;
 
-            _logger.LogInformation($"Stock exchange service waiting for {minutesToWait} minutes.");
+        //    _logger.LogInformation($"Stock exchange service waiting for {minutesToWait} minutes.");
 
-            await Task.Delay(TimeSpan.FromMinutes(minutesToWait), stoppingToken);
-        }        
+        //    await Task.Delay(TimeSpan.FromMinutes(minutesToWait), stoppingToken);
+        //}        
     }
 }

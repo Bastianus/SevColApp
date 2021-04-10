@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SevColApp.Helpers;
 using SevColApp.Hosted_service;
 using System.IO;
 
@@ -24,8 +25,9 @@ namespace SevColApp
                 })
                 .ConfigureServices(services =>
                {
-                   services.AddHostedService<StockExchangeService>();
-                   services.AddScoped<IStockExchange, StockExchange>();
+                   //services.AddSingleton<TimeHelper>();
+                   //services.AddHostedService<StockExchangeService>();
+                   //services.AddScoped<IStockExchange, StockExchange>();
                });
     }
 }
