@@ -211,6 +211,8 @@ namespace SevColApp.Repositories
             if (_context.BankAccounts.Where(x => x.AccountNumber == transfer.PayingAccountNumber).FirstOrDefault() == null) throw new TransactionAbortedException("No such account exists");
 
             if(_context.BankAccounts.Where(x => x.AccountNumber == transfer.ReceivingAccountNumber).FirstOrDefault() == null) throw new TransactionAbortedException("No such account exists");
+
+            if (transfer.PayingAccountNumber == transfer.ReceivingAccountNumber) throw new TransactionAbortedException($"Receiving account cannot be equal to the paying account.");
         }
 
         private void RemoveAmountFromPayer(Transfer transfer)

@@ -45,7 +45,7 @@ namespace SevColApp.Hosted_service
 
         public override async Task StopAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation($"Stock excahnge service is stopping at {DateTime.Now}.");
+            _logger.LogInformation($"Stock exchange service is stopping at {DateTime.Now}.");
 
             await base.StopAsync(stoppingToken);
         }    
