@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SevColApp.Context;
 
 namespace SevColApp.Migrations
 {
     [DbContext(typeof(SevColContext))]
-    partial class SevColContextModelSnapshot : ModelSnapshot
+    [Migration("20210717193141_Stock_Exchange_database_variables")]
+    partial class Stock_Exchange_database_variables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

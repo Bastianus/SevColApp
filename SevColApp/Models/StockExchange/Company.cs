@@ -9,5 +9,7 @@ namespace SevColApp.Models
         public int NumberOfStocks { get; set; }
         [NotMapped]
         public bool IsNew { get; set; }
+        public float CompanyTrendFactor { get; set; }
+        public float CompanyVolatility { get; set; }
     }
 }

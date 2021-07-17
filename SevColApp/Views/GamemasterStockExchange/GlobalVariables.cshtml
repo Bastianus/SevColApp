@@ -1,0 +1,57 @@
+﻿@model SevColApp.Models.Global
+
+@{
+    ViewData["Title"] = "Change Global variables page";
+}
+
+<html>
+<body class="gmpage">
+    @if (Model.Errors.Count == 0)
+    {
+        <form asp-action="GlobalVariables">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <table class="table table-borderless table-sm">
+                <tr>
+                    <th>Current global trend multiplier:</th>
+                    <td> @Model.MarketTrendFactor</td>
+                </tr>
+                <tr>
+                    <th class="text-right"><label>New value:</label></th>
+                    <td>
+                        <input asp-for="InputStringTrend" class="form-control col-6" />
+                        <span asp-validation-for="InputStringTrend" class="text-danger"></span>
+                    </td>
+                </tr>
+                <tr></tr>
+                <tr>
+                    <th>Current global volatility:</th>
+                    <td> @Model.MarketVolatility</td>
+                </tr>
+                <tr>
+                    <th class="text-right"><label>New value:</label></th>
+                    <td>
+                        <input asp-for="InputStringVolatility" class="form-control col-6" />
+                        <span asp-validation-for="InputStringVolatility" class="text-danger"></span>
+                    </td>
+                </tr>
+                <tr class="form-group">
+                    <th></th>
+                    <td>
+                        <input type="submit" class="btn btn-dark" />
+                        <a asp-area="" asp-controller="GamemasterStockExchange" asp-action="Index" class="btn btn-dark">Done</a> <br />
+                    </td>
+                </tr>
+            </table>
+        </form>
+    }
+    @if (Model.Errors.Count > 0)
+    {
+        @foreach (var error in Model.Errors)
+        {
+            <h4>@error</h4>
+        }
+        <a asp-area="" asp-controller="GamemasterStockExchange" asp-action="GlobalVariables" class="btn btn-outline-dark">Try again</a> <br />
+        <a asp-area="" asp-controller="GamemasterStockExchange" asp-action="Index" class="btn btn-outline-dark">Never mind</a> <br />
+    }
+</body>
+</html>

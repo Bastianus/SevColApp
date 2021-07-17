@@ -20,6 +20,7 @@ namespace SevColApp.Context
         public DbSet<StockExchangeSellRequest> StockExchangeSellRequests { get; set; }
         public DbSet<StockExchangeCompleted> StockExchangesCompleted { get; set; }
         public DbSet<UserCompanyStocks> UserCompanyStocks { get; set; }
+        public DbSet<Global> Global { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -74,6 +75,9 @@ namespace SevColApp.Context
             modelBuilder.Entity<User>().HasData(
                 new User() { Id = 7777777, LoginName = "GameMaster", FirstName = "SevCol", Prefixes = "Game", LastName = "Master", PasswordHash = new byte[] { 92, 108, 153, 233, 172, 89, 109, 109, 73, 34, 120, 114, 10, 78, 6, 6, 23, 244, 108, 223, 240, 91, 44, 24, 224, 247, 90, 97, 186, 156, 70, 239, 103, 78, 98, 107, 120, 0, 73, 97, 179, 112, 148, 154, 9, 251, 230, 73, 252, 109, 40, 116, 98, 159, 54, 98, 8, 32, 41, 41, 228, 151, 201, 183 } }
                 );
+
+            modelBuilder.Entity<Global>().HasData(
+                new Global { Id = 1,  MarketTrendFactor = 1, MarketVolatility = 1 });
         }
     }
 }

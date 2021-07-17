@@ -26,6 +26,7 @@ namespace SevColApp
             services.AddScoped<IHomeRepository, HomeRepository>();
             services.AddScoped<IBankRepository, BankRepository>();
             services.AddScoped<IGamemasterRepository, GamemasterRepository>();
+            services.AddScoped<IGamemasterStockExchangeRepository, GamemasterStockExchangeRepository>();
             services.AddScoped<IStocksRepository, StocksRepository>();
             services.AddScoped<IStocksExchanger, StocksExchanger>();
             services.AddScoped<IStockInputChecker, StockInputChecker>();            
