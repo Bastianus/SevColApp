@@ -235,7 +235,12 @@ namespace SevColApp.Repositories
 
             if(company == null)
             {
-                _context.Companies.Add(new Company { Name = companyName });
+                _context.Companies.Add(new Company 
+                { 
+                    Name = companyName,
+                    CompanyTrendFactor = 1,
+                    CompanyVolatility = 1
+                });
 
                 _context.SaveChanges();
 

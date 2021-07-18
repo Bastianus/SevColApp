@@ -58,18 +58,18 @@ namespace SevColApp.Context
                 );
 
             modelBuilder.Entity<Company>().HasData(
-                new Company { Id = 1, Name = "Endeavour"},
-                new Company { Id = 2, Name = "Evol" },
-                new Company { Id = 3, Name = "In-Gentriment" },
-                new Company { Id = 4, Name = "OCP" },
-                new Company { Id = 5, Name = "UAC" },
-                new Company { Id = 6, Name = "Phalanx" },
-                new Company { Id = 7, Name = "PMC" },
-                new Company { Id = 8, Name = "Wendall's Guards" },
-                new Company { Id = 9, Name = "Hand of Eranon" },
-                new Company { Id = 10, Name = "Hypercity Trading Company" },
-                new Company { Id = 11, Name = "WEAK" },
-                new Company { Id = 12, Name = "New Luna Jones" }
+                new Company { Id = 1, Name = "Endeavour", CompanyTrendFactor = 1, CompanyVolatility = 0.6f},
+                new Company { Id = 2, Name = "Evol", CompanyTrendFactor = 1, CompanyVolatility = 0.68f },
+                new Company { Id = 3, Name = "In-Gentriment", CompanyTrendFactor = 1, CompanyVolatility = 0.56f },
+                new Company { Id = 4, Name = "OCP", CompanyTrendFactor = 1, CompanyVolatility = 0.47f },
+                new Company { Id = 5, Name = "UAC", CompanyTrendFactor = 1, CompanyVolatility = 0.52f },
+                new Company { Id = 6, Name = "Phalanx", CompanyTrendFactor = 1, CompanyVolatility = 1.4f },
+                new Company { Id = 7, Name = "PMC", CompanyTrendFactor = 1, CompanyVolatility = 1.13f },
+                new Company { Id = 8, Name = "Wendall's Guards", CompanyTrendFactor = 1, CompanyVolatility = 1.45f },
+                new Company { Id = 9, Name = "Hand of Eranon", CompanyTrendFactor = 1, CompanyVolatility = 1.76f },
+                new Company { Id = 10, Name = "Hypercity Trading Company", CompanyTrendFactor = 1, CompanyVolatility = 0.8f },
+                new Company { Id = 11, Name = "WEAK", CompanyTrendFactor = 1, CompanyVolatility = 1.37f },
+                new Company { Id = 12, Name = "New Luna Jones", CompanyTrendFactor = 1, CompanyVolatility = 1.12f }
                 );
 
             modelBuilder.Entity<User>().HasData(
