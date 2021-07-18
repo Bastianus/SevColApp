@@ -65,6 +65,9 @@ namespace SevColApp.Controllers
             {
                 _repo.SetGlobalTrend(newMarketTrendValue);
                 _repo.SetGlobalVolatility(newMarketVolatilityValue);
+
+                input.MarketTrendFactor = _repo.GetGlobalTrend();
+                input.MarketVolatility = _repo.GetGlobalVolatility();
             }
 
             return View("GlobalVariables", input);
